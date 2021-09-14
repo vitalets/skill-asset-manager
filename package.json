@@ -1,0 +1,60 @@
+{
+  "name": "skill-asset-manager",
+  "description": "Easily upload and synchronize skill assets",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "bin": "dist/cli.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "lint": "eslint src test --ext .ts",
+    "test:alice:images": "mocha -r ts-node/register test/setup.ts test/specs/alice.images.spec.ts",
+    "test:alice:sounds": "mocha -r ts-node/register test/setup.ts test/specs/alice.sounds.spec.ts",
+    "test:marusya:images": "mocha -r ts-node/register test/setup.ts test/specs/marusya.images.spec.ts",
+    "test:marusya:sounds": "mocha -r ts-node/register test/setup.ts test/specs/marusya.sounds.spec.ts",
+    "check": "LOG_LEVEL=debug ts-node ./src/cli sync images alice -c assets.config.test.js",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "release": "npm run lint && npm run build && npm version $VER && npm publish && git push --follow-tags --no-verify",
+    "release-patch": "VER=patch npm run release",
+    "release-minor": "VER=minor npm run release"
+  },
+  "lint-staged": {
+    "src/**/*.ts": "eslint --ext .ts"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "console-log-level": "^1.4.1",
+    "fast-glob": "^3.2.7",
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.6.2",
+    "yargs": "^17.0.1"
+  },
+  "devDependencies": {
+    "@types/console-log-level": "^1.4.2",
+    "@types/mocha": "^9.0.0",
+    "@types/node": "^16.9.1",
+    "@types/node-fetch": "^2.5.12",
+    "@types/yargs": "^17.0.2",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@typescript-eslint/parser": "^4.22.0",
+    "dotenv": "^10.0.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-mocha": "^9.0.0",
+    "lint-staged": "^11.1.2",
+    "mocha": "^9.1.1",
+    "ts-node": "^10.1.0",
+    "typescript": "^4.2.4"
+  },
+  "author": {
+    "name": "Vitaliy Potapov"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vitalets/skill-asset-manager.git"
+  },
+  "license": "MIT"
+}
