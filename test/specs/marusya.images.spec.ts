@@ -1,6 +1,6 @@
 import { MarusyaImagesApi } from '../../src/marusya/images';
 import { MarusyaTarget } from '../../src/config';
-import config from '../../assets.config.test';
+import config from '../assets.config.test';
 
 describe('marusya images', () => {
 

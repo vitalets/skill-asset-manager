@@ -1,6 +1,6 @@
 import { AliceImagesApi } from '../../src/alice/images';
 import { AliceTarget } from '../../src/config';
-import config from '../../assets.config.test';
+import config from '../assets.config.test';
 
 describe('alice images', () => {
 

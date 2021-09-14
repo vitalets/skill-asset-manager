@@ -1,6 +1,6 @@
 import { MarusyaSoundsApi } from '../../src/marusya/sounds';
 import { MarusyaTarget } from '../../src/config';
-import config from '../../assets.config.test';
+import config from '../assets.config.test';
 
 describe('marusya sounds', () => {
 

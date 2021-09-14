@@ -1,6 +1,6 @@
 import { AliceSoundsApi } from '../../src/alice/sounds';
 import { AliceTarget } from '../../src/config';
-import config from '../../assets.config.test';
+import config from '../assets.config.test';
 
 describe('alice sounds', () => {
 
