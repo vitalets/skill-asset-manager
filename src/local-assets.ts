@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import fg from 'fast-glob';
 import { Defaults } from './utils/types';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 
 export interface LocalAsset {
   /**

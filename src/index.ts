@@ -3,7 +3,7 @@ import { DbFile } from './db-file';
 import { LocalAssets } from './local-assets';
 import { RemoteAssets } from './remote-assets';
 import { SyncingAssets } from './syncing-assets';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 import { AssetType } from './types';
 // import { confirm } from './utils/confirm';
 // import { Uploader } from './uploader';

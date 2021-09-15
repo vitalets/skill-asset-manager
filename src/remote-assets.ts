@@ -1,6 +1,6 @@
 import { AssetType, Platform } from './types';
 import { AliceTarget, Target } from './config';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 import { UniversalApi, RemoteAsset } from './api/universal/types';
 import { AliceImagesUniversalApi } from './api/universal/alice.images';
 import { AliceSoundsUniversalApi } from './api/universal/alice.sounds';

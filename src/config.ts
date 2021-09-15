@@ -6,7 +6,7 @@ import { LocalAssetsConfig } from './local-assets';
 import { AliceApiOptions } from './api/alice/base';
 import { MarusyaApiOptions } from './api/marusya/base';
 import { DbFileOptions } from './db-file';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 import { Platform } from './types';
 
 export type AliceTarget = AliceApiOptions & Pick<DbFileOptions, 'dbFile'> & {

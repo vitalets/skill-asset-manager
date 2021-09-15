@@ -6,7 +6,7 @@ import { DbFile } from './db-file';
 import { LocalAsset, LocalAssets } from './local-assets';
 import { RemoteAsset, RemoteAssets } from './remote-assets';
 import { compareArrays } from './utils';
-import { logger } from './logger';
+import { logger } from './utils/logger';
 
 export enum LocalState {
   /** Exists in local dir, but not in db file */
