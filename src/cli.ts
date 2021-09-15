@@ -59,7 +59,7 @@ async function runCommandForTarget(config: Config, assetType: AssetType, targetN
   switch (command) {
     case 'sync': return manager.sync();
     case 'clean': return manager.clean();
-    case 'verify':
-    default: return manager.verify();
+    case 'verify': return manager.verify();
+    default: throw new Error(`Unknown command: ${command}`);
   }
 }
