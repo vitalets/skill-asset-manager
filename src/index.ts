@@ -5,6 +5,7 @@ import { RemoteAssets } from './remote-assets';
 import { SyncingAssets } from './syncing-assets';
 import { logger } from './logger';
 import { AssetType } from './types';
+// import { detectActions } from './actions';
 
 export class AssetManager {
   target: Target;
@@ -27,11 +28,9 @@ export class AssetManager {
    */
   async sync() {
     logger.log(`SYNC ${this.assetType} for target: ${this.targetName}`);
-    await this.dbFile.load();
-    await this.localAssets.load();
-    await this.remoteAssets.load();
-    this.syncingAssets.compare();
-    // console.log(this.syncingAssets.items);
+    await this.loadAndCompare();
+    // const actions = detectActions(this.syncingAssets.items);
+    //console.log(actions)
     // mark and show them as to upload
     // get confirm from user
     // do upload
@@ -57,6 +56,13 @@ export class AssetManager {
     logger.log(`CLEAN (${this.assetType}) for target: ${this.targetName}`);
     // find assets that exists on remove but not exists in dbFile (dbFile must be synced with local assets)
     // mark and show assets to delete
+  }
+
+  private async loadAndCompare() {
+    await this.dbFile.load();
+    await this.localAssets.load();
+    await this.remoteAssets.load();
+    this.syncingAssets.compare();
   }
 
   private createLocalAssets() {

@@ -11,11 +11,11 @@ import { logger } from './logger';
 export enum LocalState {
   /** Exists in local dir, but not in db file */
   NEW = 'NEW',
-  /** Exists in local dir and in db file, but mktime changed */
-  CHANGED = 'CHANGED',
   /** Exists in db file, but not in local dir */
   DELETED = 'DELETED',
-  /** Exists in local dir and in db file and mktime not changed */
+  /** Exists in both local dir and db file, but mktime changed */
+  CHANGED = 'CHANGED',
+  /** Exists in both local dir and db file and mktime not changed */
   NOT_CHANGED = 'NOT_CHANGED',
 }
 
@@ -43,6 +43,40 @@ export class SyncingAssets {
   compare() {
     this.compareLocalAssetsWithDbFile();
     this.compareRemoteAssetsWithDbFile();
+  }
+
+  getItemsSynced() {
+    return this.items.filter(({ localState, remoteState }) => {
+      return [
+        localState === LocalState.NOT_CHANGED,
+        remoteState === RemoteState.UPLOADED,
+      ].every(Boolean);
+    });
+  }
+
+  getItemsToUpload() {
+    return this.items.filter(({ localState, remoteState }) => {
+      return [
+        localState === LocalState.NEW,
+        localState === LocalState.CHANGED,
+        localState === LocalState.NOT_CHANGED && remoteState === RemoteState.NOT_UPLOADED,
+      ].some(Boolean);
+    });
+  }
+
+  getItemsToDeleteFromDbFile() {
+    return this.items.filter(({ localState }) => {
+      return localState === LocalState.DELETED;
+    });
+  }
+
+  getItemsToDeleteFromRemote() {
+    return this.items.filter(({ localState, remoteState }) => {
+      return [
+        localState === LocalState.DELETED,
+        remoteState === RemoteState.NOT_USED,
+      ].some(Boolean);
+    });
   }
 
   private compareLocalAssetsWithDbFile() {
