@@ -1,7 +1,12 @@
+/**
+ * Compare data between local files, db file and remote.
+ * Outputs list of SyncingAsset with actual states.
+ */
 import { DbFile } from './db-file';
 import { LocalAsset, LocalAssets } from './local-assets';
 import { RemoteAsset, RemoteAssets } from './remote-assets';
 import { compareArrays } from './utils';
+import { logger } from './logger';
 
 export enum LocalState {
   /** Exists in local dir, but not in db file */
@@ -42,8 +47,9 @@ export class SyncingAssets {
 
   private compareLocalAssetsWithDbFile() {
     const localFileIds = Object.keys(this.localAssets.items);
-    const dbFileIds = Object.keys(this.dbFile.payloads);
+    const dbFileIds = Object.keys(this.dbFile.meta);
     const [ newFileIds, commonFileIds, deletedFileIds ] = compareArrays(localFileIds, dbFileIds);
+    logger.debug(`Compare local assets with db:`, { newFileIds, commonFileIds, deletedFileIds });
     newFileIds.forEach(fileId => this.addLocalState(fileId, LocalState.NEW));
     commonFileIds.forEach(fileId => {
       const localAsset = this.localAssets.items[fileId];
@@ -59,6 +65,7 @@ export class SyncingAssets {
     const dbIds = dbMetaItems.map(item => item.remoteId);
     const remoteIds = this.remoteAssets.items.map(item => item.id);
     const [ notUploadedIds, uploadedIds, notUsedIds ] = compareArrays(dbIds, remoteIds);
+    logger.debug(`Compare remote assets with db:`, { notUploadedIds, uploadedIds, notUsedIds });
     notUploadedIds.forEach(remoteId => this.updateRemoteState(remoteId, RemoteState.NOT_UPLOADED));
     uploadedIds.forEach(remoteId => this.updateRemoteState(remoteId, RemoteState.UPLOADED));
     notUsedIds.forEach(remoteId => this.items.push({ remoteId, remoteState: RemoteState.NOT_USED }));

@@ -18,7 +18,7 @@ export class AssetManager {
     this.target = this.config.getTarget(this.targetName);
     this.dbFile = new DbFile({ dbFile: this.target.dbFile, assetType });
     this.localAssets = this.createLocalAssets();
-    this.remoteAssets = new RemoteAssets(this.assetType, this.target);
+    this.remoteAssets = this.createRemoteAssets();
     this.syncingAssets = new SyncingAssets(this.dbFile, this.localAssets, this.remoteAssets);
   }
 
@@ -63,5 +63,12 @@ export class AssetManager {
     const assetsConfig = this.config.data[this.assetType];
     if (!assetsConfig) throw new Error(`Config should contain "${this.assetType}".`);
     return new LocalAssets(assetsConfig);
+  }
+
+  private createRemoteAssets() {
+    return new RemoteAssets({
+      target: this.target,
+      assetType: this.assetType,
+    });
   }
 }

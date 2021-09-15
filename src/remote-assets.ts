@@ -19,29 +19,35 @@ export interface RemoteAsset {
   payload: string;
 }
 
+export interface RemoteAssetsConfig {
+  target: Target
+  assetType: AssetType
+}
+
 export class RemoteAssets {
   api: UniversalApi;
   items: RemoteAsset[] = [];
 
-  constructor(private assetType: AssetType, private target: Target) {
+  constructor(private options: RemoteAssetsConfig) {
     this.api = this.createUniversalApi();
   }
 
   async load() {
-    logger.debug(`Remote assets loading: ${this.assetType}`);
+    logger.debug(`Remote assets loading: ${this.options.assetType}`);
     this.items = await this.api.getItems();
     logger.debug(`Remote assets loaded: ${this.items.length}`);
   }
 
   private createUniversalApi(): UniversalApi {
-    if (this.assetType === AssetType.images) {
-      return isAliceTarget(this.target)
-        ? new AliceImagesUniversalApi(this.target)
-        : new MarusyaImagesUniversalApi(this.target);
+    const { assetType, target } = this.options;
+    if (assetType === AssetType.images) {
+      return isAliceTarget(target)
+        ? new AliceImagesUniversalApi(target)
+        : new MarusyaImagesUniversalApi(target);
     } else {
-      return isAliceTarget(this.target)
-        ? new AliceSoundsUniversalApi(this.target)
-        : new MarusyaSoundsUniversalApi(this.target);
+      return isAliceTarget(target)
+        ? new AliceSoundsUniversalApi(target)
+        : new MarusyaSoundsUniversalApi(target);
     }
   }
 }

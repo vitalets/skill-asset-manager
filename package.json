@@ -10,6 +10,8 @@
   ],
   "scripts": {
     "lint": "eslint src test --ext .ts",
+    "test": "mocha -r ts-node/register test/setup.ts test/specs/*.ts",
+    "test:d": "LOG_LEVEL=debug npm t",
     "test:alice:images": "mocha -r ts-node/register test/setup.ts test/specs-api/alice.images.spec.ts",
     "test:alice:sounds": "mocha -r ts-node/register test/setup.ts test/specs-api/alice.sounds.spec.ts",
     "test:marusya:images": "mocha -r ts-node/register test/setup.ts test/specs-api/marusya.images.spec.ts",
