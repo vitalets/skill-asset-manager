@@ -37,7 +37,7 @@ export class Config {
 
   async load() {
     // todo: find file js, cjs, mjs
-    logger.debug(`Loading config from: ${this.path}`);
+    logger.debug(`Config loading: ${this.path}`);
     const fullPath = path.join(process.cwd(), this.path);
     const content = await import(fullPath);
     this.data = Object.assign({}, defaults, content.default as ConfigData);

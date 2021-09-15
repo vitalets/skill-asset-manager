@@ -1,5 +1,5 @@
-import { AssetType } from '.';
-import { AliceTarget, Platform, Target } from './config';
+import { AssetType, Platform } from './types';
+import { AliceTarget, Target } from './config';
 import { AliceImagesUniversalApi } from './alice/images.universal';
 import { AliceSoundsUniversalApi } from './alice/sounds.universal';
 import { MarusyaImagesUniversalApi } from './marusya/images.universal';
@@ -28,9 +28,9 @@ export class RemoteAssets {
   }
 
   async load() {
-    logger.debug(`Loading remote ${this.assetType}`);
+    logger.debug(`Remote assets loading: ${this.assetType}`);
     this.items = await this.api.getItems();
-    logger.debug(`Loaded remote ${this.assetType}: ${this.items.length}`);
+    logger.debug(`Remote assets loaded: ${this.items.length}`);
   }
 
   private createUniversalApi(): UniversalApi {

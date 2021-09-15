@@ -3,10 +3,10 @@
  */
 import fs from 'fs';
 import { logger } from './logger';
-import { FileId, FileInfo } from './local-assets';
+import { LocalAsset } from './local-assets';
 import { RemoteAsset } from './remote-assets';
 import { AssetType } from './types';
-import { intersectArrays } from './utils';
+import { compareArrays } from './utils';
 
 export interface DbFileOptions {
   dbFile: string;
@@ -14,13 +14,13 @@ export interface DbFileOptions {
 }
 
 export interface DbFileData {
-  images: Record<FileId, RemoteAsset['payload']>;
-  sounds: Record<FileId, RemoteAsset['payload']>;
-  imagesMeta: Record<FileId, Meta>;
-  soundsMeta: Record<FileId, Meta>;
+  images: Record<LocalAsset['fileId'], RemoteAsset['payload']>;
+  sounds: Record<LocalAsset['fileId'], RemoteAsset['payload']>;
+  imagesMeta: Record<LocalAsset['fileId'], DbFileMeta>;
+  soundsMeta: Record<LocalAsset['fileId'], DbFileMeta>;
 }
 
-export type Meta = FileInfo & { id: RemoteAsset['id'] };
+export type DbFileMeta = LocalAsset & { remoteId: RemoteAsset['id'] };
 
 export class DbFile {
   data: DbFileData = { images: {}, sounds: {}, imagesMeta: {}, soundsMeta: {} };
@@ -44,15 +44,15 @@ export class DbFile {
       logger.debug(`Db file loaded.`);
       this.validate();
     } else {
-      logger.debug(`Db file doesn't exist (${dbFile}), using fresh data.`);
+      logger.debug(`Db file does not exist.`);
     }
   }
 
   private validate() {
     const payloadKeys = Object.keys(this.payloads);
     const metaKeys = Object.keys(this.meta);
-    const [ uniquePayloads, _, uniqueMeta ] = intersectArrays(payloadKeys, metaKeys);
-    if (uniquePayloads.length) throw new Error(`Unique payload ids: ${uniquePayloads.join(', ')}`);
-    if (uniqueMeta.length) throw new Error(`Unique meta ids: ${uniqueMeta.join(', ')}`);
+    const [ uniquePayloadKeys, _, uniqueMetaKeys ] = compareArrays(payloadKeys, metaKeys);
+    if (uniquePayloadKeys.length) throw new Error(`Unique payload ids: ${uniquePayloadKeys.join(', ')}`);
+    if (uniqueMetaKeys.length) throw new Error(`Unique meta ids: ${uniqueMetaKeys.join(', ')}`);
   }
 }

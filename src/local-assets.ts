@@ -4,6 +4,21 @@ import fg from 'fast-glob';
 import { Defaults } from './utils';
 import { logger } from './logger';
 
+export interface LocalAsset {
+  /**
+   * Идентификатор ресурса, рассчитываемый из имени файла.
+   * Именно он используется для обращения к ресурсу внутри скила.
+   * По умолчанию равен имени файла (без расширения).
+   * Можно кастомизировать получение fileId, когда в имени файла содержится разная другая мета-информация.
+   * Например, можно записывать fileId в квадратных скобках: "my image[foo].png"
+   */
+  fileId: string;
+  /** Путь к файлу */
+  file: string;
+  /** Таймстемп последней модификации файла */
+  mtimeMs: number;
+}
+
 export interface LocalAssetsConfig {
   pattern: string;
   cwd?: string;
@@ -13,42 +28,26 @@ export interface LocalAssetsConfig {
 
 const defaults: Defaults<LocalAssetsConfig> = {
   cwd: process.cwd(),
-  getFileId: file => path.basename(file),
+  getFileId: file => path.parse(file).name,
   transform: buffer => buffer,
 };
 
-/**
- * Идентификатор ресурса, рассчитываемый из имени файла.
- * Именно он используется для обращения к ресурсу внутри скила.
- * По умолчанию равен имени файла (без расширения).
- * Можно кастомизировать получение fileId, когда в имени файла содержится разная другая мета-информация.
- * Например, можно записывать fileId в квадратных скобках: "my image[foo].png"
- */
-export type FileId = string;
-
-export interface FileInfo {
-  /** Путь к файлу */
-  file: string;
-  /** Таймстемп последней модификации файла */
-  mtimeMs: number;
-}
-
 export class LocalAssets {
   options: Required<LocalAssetsConfig>;
-  items: Record<FileId, FileInfo> = {};
+  items: Record<LocalAsset['fileId'], LocalAsset> = {};
 
   constructor(options: LocalAssetsConfig) {
     this.options = Object.assign({}, defaults, options);
   }
 
   async load() {
-    logger.debug(`Reading files from: ${this.options.pattern}`);
+    logger.debug(`Local files loading: ${this.options.pattern}`);
     const files = await fg(this.options.pattern, { onlyFiles: true });
-    logger.debug(`Found files: ${files.length}`);
+    logger.debug(`Local files loaded: ${files.length}`);
     files.forEach(file => {
       const fileId = this.getFileId(file);
       const { mtimeMs } = fs.statSync(file);
-      this.items[fileId] = { file, mtimeMs };
+      this.items[fileId] = { fileId, file, mtimeMs };
     });
   }
 

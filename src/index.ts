@@ -2,6 +2,7 @@ import { Config, Target } from './config';
 import { DbFile } from './db-file';
 import { LocalAssets } from './local-assets';
 import { RemoteAssets } from './remote-assets';
+import { SyncingAssets } from './syncing-assets';
 import { logger } from './logger';
 import { AssetType } from './types';
 
@@ -10,6 +11,7 @@ export class AssetManager {
   localAssets: LocalAssets;
   dbFile: DbFile;
   remoteAssets: RemoteAssets;
+  syncingAssets: SyncingAssets;
 
   constructor(private config: Config, private assetType: AssetType, private targetName: string) {
     // todo: reuse local assets
@@ -17,6 +19,7 @@ export class AssetManager {
     this.dbFile = new DbFile({ dbFile: this.target.dbFile, assetType });
     this.localAssets = this.createLocalAssets();
     this.remoteAssets = new RemoteAssets(this.assetType, this.target);
+    this.syncingAssets = new SyncingAssets(this.dbFile, this.localAssets, this.remoteAssets);
   }
 
   /**
@@ -27,19 +30,23 @@ export class AssetManager {
     await this.dbFile.load();
     await this.localAssets.load();
     await this.remoteAssets.load();
-    // find changed assets, mark and show them as to upload
+    this.syncingAssets.compare();
+    // console.log(this.syncingAssets.items);
+    // mark and show them as to upload
     // get confirm from user
     // do upload
     // update and save db file
   }
 
   /**
-   * Verifies that:
-   * 1. all changed local assets are uploaded to remote
-   * 2. all dbFile assets are found on remote
+   * Verifies that all items in dbFile are uploaded to remote.
    */
   async verify() {
     logger.log(`VERIFY (${this.assetType}) for target: ${this.targetName}`);
+    await this.dbFile.load();
+    await this.remoteAssets.load();
+    // set asset status:
+    // NOT_UPLOADED: in db file, mtime not changed but not exists on remote -> upload
   }
 
   /**
