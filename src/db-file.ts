@@ -2,6 +2,7 @@
  * File storing actual info about assets for particular skill.
  */
 import fs from 'fs';
+import path from 'path';
 import { logger } from './logger';
 import { LocalAsset } from './local-assets';
 import { RemoteAsset } from './remote-assets';
@@ -46,6 +47,29 @@ export class DbFile {
     } else {
       logger.debug(`Db file does not exist.`);
     }
+  }
+
+  async save() {
+    const { dbFile } = this.options;
+    logger.debug(`Db file saving: ${dbFile}`);
+    await fs.promises.mkdir(path.dirname(dbFile), { recursive: true });
+    const content = JSON.stringify(this.data);
+    await fs.promises.writeFile(dbFile, content);
+    logger.debug(`Db file saved.`);
+  }
+
+  upsertItem(localAsset: LocalAsset, { id, payload }: RemoteAsset) {
+    const { fileId } = localAsset;
+    this.payloads[fileId] = payload;
+    this.meta[fileId] = {
+      ...localAsset,
+      remoteId: id,
+    };
+  }
+
+  deleteItem(fileId: LocalAsset['fileId']) {
+    delete this.payloads[fileId];
+    delete this.meta[fileId];
   }
 
   private validate() {
