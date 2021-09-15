@@ -6,6 +6,7 @@ import { logger } from './logger';
 import { FileId, FileInfo } from './local-assets';
 import { RemoteAsset } from './remote-assets';
 import { AssetType } from './types';
+import { intersectArrays } from './utils';
 
 export interface DbFileOptions {
   dbFile: string;
@@ -41,8 +42,17 @@ export class DbFile {
       const content = await fs.promises.readFile(dbFile, 'utf8');
       Object.assign(this.data, JSON.parse(content));
       logger.debug(`Db file loaded.`);
+      this.validate();
     } else {
       logger.debug(`Db file doesn't exist (${dbFile}), using fresh data.`);
     }
+  }
+
+  private validate() {
+    const payloadKeys = Object.keys(this.payloads);
+    const metaKeys = Object.keys(this.meta);
+    const [ uniquePayloads, _, uniqueMeta ] = intersectArrays(payloadKeys, metaKeys);
+    if (uniquePayloads.length) throw new Error(`Unique payload ids: ${uniquePayloads.join(', ')}`);
+    if (uniqueMeta.length) throw new Error(`Unique meta ids: ${uniqueMeta.join(', ')}`);
   }
 }
