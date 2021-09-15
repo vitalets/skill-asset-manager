@@ -45,40 +45,6 @@ export class SyncingAssets {
     this.compareRemoteAssetsWithDbFile();
   }
 
-  getItemsSynced() {
-    return this.items.filter(({ localState, remoteState }) => {
-      return [
-        localState === LocalState.NOT_CHANGED,
-        remoteState === RemoteState.UPLOADED,
-      ].every(Boolean);
-    });
-  }
-
-  getItemsToUpload() {
-    return this.items.filter(({ localState, remoteState }) => {
-      return [
-        localState === LocalState.NEW,
-        localState === LocalState.CHANGED,
-        localState === LocalState.NOT_CHANGED && remoteState === RemoteState.NOT_UPLOADED,
-      ].some(Boolean);
-    });
-  }
-
-  getItemsToDeleteFromDbFile() {
-    return this.items.filter(({ localState }) => {
-      return localState === LocalState.DELETED;
-    });
-  }
-
-  getItemsToDeleteFromRemote() {
-    return this.items.filter(({ localState, remoteState }) => {
-      return [
-        localState === LocalState.DELETED,
-        remoteState === RemoteState.NOT_USED,
-      ].some(Boolean);
-    });
-  }
-
   private compareLocalAssetsWithDbFile() {
     const localFileIds = Object.keys(this.localAssets.items);
     const dbFileIds = Object.keys(this.dbFile.meta);

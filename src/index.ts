@@ -5,7 +5,8 @@ import { RemoteAssets } from './remote-assets';
 import { SyncingAssets } from './syncing-assets';
 import { logger } from './logger';
 import { AssetType } from './types';
-// import { detectActions } from './actions';
+// import { confirm } from './utils/confirm';
+// import { Uploader } from './uploader';
 
 export class AssetManager {
   target: Target;
@@ -28,13 +29,22 @@ export class AssetManager {
    */
   async sync() {
     logger.log(`SYNC ${this.assetType} for target: ${this.targetName}`);
-    await this.loadAndCompare();
+    // const accept = await confirm('Upload 14 asset(s)? y/[n]:');
+    // console.log(accept)
+    // await this.loadAndCompare();
+
     // const actions = detectActions(this.syncingAssets.items);
     //console.log(actions)
+
     // mark and show them as to upload
     // get confirm from user
-    // do upload
-    // update and save db file
+    // const uploader = new Uploader(this.dbFile, this.localAssets, this.remoteAssets);
+    // try {
+    //   await uploader.run();
+    // } finally {
+    //   await this.dbFile.save();
+    // }
+    logger.log('Done.');
   }
 
   /**

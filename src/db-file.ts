@@ -38,7 +38,7 @@ export class DbFile {
 
   async load() {
     const { dbFile } = this.options;
-    logger.debug(`Db file loading: ${dbFile}`);
+    logger.log(`Db file loading: ${dbFile}`);
     if (fs.existsSync(dbFile)) {
       const content = await fs.promises.readFile(dbFile, 'utf8');
       Object.assign(this.data, JSON.parse(content));
@@ -51,7 +51,7 @@ export class DbFile {
 
   async save() {
     const { dbFile } = this.options;
-    logger.debug(`Db file saving: ${dbFile}`);
+    logger.log(`Db file saving: ${dbFile}`);
     await fs.promises.mkdir(path.dirname(dbFile), { recursive: true });
     const content = JSON.stringify(this.data);
     await fs.promises.writeFile(dbFile, content);
