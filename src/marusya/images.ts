@@ -2,7 +2,7 @@
  * See: https://vk.com/dev/marusia_skill_docs10
  */
 import FormData from 'form-data';
-import { Base } from './base';
+import { MarusyaApi } from './base';
 import {
   GetImagesResult,
   GetImageUploadLinkResult,
@@ -11,7 +11,7 @@ import {
   DeleteImageResult
 } from './images.types';
 
-export class MarusyaImagesApi extends Base {
+export class MarusyaImagesApi extends MarusyaApi {
   async getItems() {
     const { response } = await this.request('/marusia.getPictures') as GetImagesResult;
     return response.items;

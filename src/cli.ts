@@ -3,7 +3,8 @@ import yargs from 'yargs/yargs';
 import { Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Config } from './config';
-import { AssetType, AssetManager } from '.';
+import { AssetManager } from '.';
+import { AssetType } from './types';
 
 type PositionalArgs = {
   asset: CliAssetType;

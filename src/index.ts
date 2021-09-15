@@ -3,11 +3,7 @@ import { DbFile } from './db-file';
 import { LocalAssets } from './local-assets';
 import { RemoteAssets } from './remote-assets';
 import { logger } from './logger';
-
-export enum AssetType {
-  images = 'images',
-  sounds = 'sounds',
-}
+import { AssetType } from './types';
 
 export class AssetManager {
   target: Target;
@@ -18,7 +14,7 @@ export class AssetManager {
   constructor(private config: Config, private assetType: AssetType, private targetName: string) {
     // todo: reuse local assets
     this.target = this.config.getTarget(this.targetName);
-    this.dbFile = new DbFile(this.target.dbFile);
+    this.dbFile = new DbFile({ dbFile: this.target.dbFile, assetType });
     this.localAssets = this.createLocalAssets();
     this.remoteAssets = new RemoteAssets(this.assetType, this.target);
   }

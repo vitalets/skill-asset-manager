@@ -3,24 +3,18 @@
  */
 import path from 'path';
 import { LocalAssetsConfig } from './local-assets';
+import { AliceApiOptions } from './alice/base';
+import { MarusyaApiOptions } from './marusya/base';
+import { DbFileOptions } from './db-file';
 import { logger } from './logger';
+import { Platform } from './types';
 
-export enum Platform {
-  alice = 'alice',
-  marusya = 'marusya',
+export type AliceTarget = AliceApiOptions & Pick<DbFileOptions, 'dbFile'> & {
+  platform: Platform.alice;
 }
 
-export interface AliceTarget {
-  platform: Platform;
-  dbFile: string;
-  token: string;
-  skillId: string;
-}
-
-export interface MarusyaTarget {
-  platform: Platform;
-  dbFile: string;
-  token: string;
+export type MarusyaTarget = MarusyaApiOptions & Pick<DbFileOptions, 'dbFile'> & {
+  platform: Platform.marusya;
 }
 
 export type Target = AliceTarget | MarusyaTarget;

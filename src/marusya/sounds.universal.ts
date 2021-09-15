@@ -13,8 +13,8 @@ export class MarusyaSoundsUniversalApi implements UniversalApi {
 
   async getItems() {
     const items = await this.platformApi.getItems();
-    return items.map(item => {
-      return { id: String(item.id), payload: this.platformApi.getTts(item) };
+    return items.map(({ id }) => {
+      return { id: String(id), payload: this.platformApi.getTts(id) };
     });
   }
 

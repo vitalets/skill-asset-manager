@@ -2,13 +2,13 @@
  * See: https://yandex.ru/dev/dialogs/alice/doc/resource-sounds-upload.html#http-load
  */
 
-import { Base, BaseOptions } from './base';
+import { AliceApi, AliceApiOptions } from './base';
 import { GetSoundsResult, GetSoundResult, UploadSoundResult } from './sounds.types';
 
-export class AliceSoundsApi extends Base {
-  constructor({ token, skillId }: Pick<BaseOptions, 'token' | 'skillId'>) {
-    const relativeUrl = `/skills/${skillId}/sounds`;
-    super({ token, skillId, relativeUrl });
+export class AliceSoundsApi extends AliceApi {
+  constructor(options: AliceApiOptions) {
+    super(options);
+    this.relativeUrl = `/skills/${this.options.skillId}/sounds`;
   }
 
   async getQuota() {

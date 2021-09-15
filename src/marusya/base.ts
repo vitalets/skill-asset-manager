@@ -9,12 +9,17 @@ import { fetchJson, FetchOptions } from '../utils';
 const BASE_URL = 'https://api.vk.com/method';
 const API_VERSION = '5.131';
 
-export interface BaseOptions {
+export interface MarusyaApiOptions {
   token: string;
+  /**
+   * Чтобы узнать ownerId, нужно загрузить в навык один звук.
+   * Пример: audio_vk_id: -2000512009_456239036 -> ownerId = -2000512009
+   */
+  ownerId: number;
 }
 
-export abstract class Base {
-  constructor(protected options: BaseOptions) { }
+export abstract class MarusyaApi {
+  constructor(protected options: MarusyaApiOptions) { }
 
   protected async doUpload<T>(url: string, filePath: string, field: string) {
     const buffer = fs.createReadStream(filePath);

@@ -2,13 +2,13 @@
  * See: https://yandex.ru/dev/dialogs/alice/doc/resource-upload.html#http-images-load
  */
 
-import { Base, BaseOptions } from './base';
+import { AliceApi, AliceApiOptions } from './base';
 import { GetImagesResult, UploadImageResult } from './images.types';
 
-export class AliceImagesApi extends Base {
-  constructor({ token, skillId }: Pick<BaseOptions, 'token' | 'skillId'>) {
-    const relativeUrl = `/skills/${skillId}/images`;
-    super({ token, skillId, relativeUrl });
+export class AliceImagesApi extends AliceApi {
+  constructor(options: AliceApiOptions) {
+    super(options);
+    this.relativeUrl = `/skills/${this.options.skillId}/images`;
   }
 
   async getQuota() {

@@ -1,17 +1,16 @@
 /**
  * See: https://vk.com/dev/marusia_skill_docs10
  */
-import { Base } from './base';
+import { MarusyaApi } from './base';
 import {
   GetSoundsResult,
   GetSoundUploadLinkResult,
   UploadSoundResult,
   SaveSoundResult,
   DeleteSoundResult,
-  Sound,
 } from './sounds.types';
 
-export class MarusyaSoundsApi extends Base {
+export class MarusyaSoundsApi extends MarusyaApi {
   async getItems() {
     const { response } = await this.request('/marusia.getAudios') as GetSoundsResult;
     return response.audios;
@@ -34,8 +33,8 @@ export class MarusyaSoundsApi extends Base {
     if (response !== 1) throw new Error(`Error while deleting sound ${id}`);
   }
 
-  getTts({ owner_id, id }: Sound) {
-    return `<speaker audio_vk_id="${owner_id}_${id}">`;
+  getTts(id: number) {
+    return `<speaker audio_vk_id="${this.options.ownerId}_${id}">`;
   }
 
   protected async getUploadLink() {
