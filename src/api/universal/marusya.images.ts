@@ -3,6 +3,7 @@
  */
 import { UniversalApi } from './types';
 import { MarusyaImagesApi } from '../marusya/images';
+import { Image } from '../marusya/images.types';
 
 export class MarusyaImagesUniversalApi implements UniversalApi {
   platformApi: MarusyaImagesApi;
@@ -13,16 +14,22 @@ export class MarusyaImagesUniversalApi implements UniversalApi {
 
   async getItems() {
     const items = await this.platformApi.getItems();
-    return items.map(({ id }) => {
-      return { id: String(id), payload: String(id) };
-    });
+    return items.map(item => this.toRemoteAsset(item));
   }
 
   async uploadItem(filePath: string) {
-    await this.platformApi.uploadItem(filePath);
+    const item = await this.platformApi.uploadItem(filePath);
+    return this.toRemoteAsset(item);
   }
 
   async deleteItem(id: string) {
     await this.platformApi.deleteItem(Number(id));
+  }
+
+  private toRemoteAsset({ id }: Image) {
+    return {
+      id: String(id),
+      payload: String(id),
+    };
   }
 }

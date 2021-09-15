@@ -8,7 +8,8 @@ import {
   GetImageUploadLinkResult,
   UploadImageResult,
   SaveImageResult,
-  DeleteImageResult
+  DeleteImageResult,
+  Image,
 } from './images.types';
 
 export class MarusyaImagesApi extends MarusyaApi {
@@ -22,11 +23,11 @@ export class MarusyaImagesApi extends MarusyaApi {
     return items.find(items => items.id === id);
   }
 
-  async uploadItem(filePath: string) {
+  async uploadItem(filePath: string): Promise<Image> {
     const url = await this.getUploadLink();
     const meta = await this.doUpload<UploadImageResult>(url, filePath, 'photo');
-    const res = await this.saveSound(meta);
-    return res;
+    const { photo_id } = await this.saveSound(meta);
+    return { id: photo_id, owner_id: this.options.ownerId };
   }
 
   async deleteItem(id: number) {

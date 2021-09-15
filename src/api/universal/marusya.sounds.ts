@@ -3,6 +3,7 @@
  */
 import { UniversalApi } from './types';
 import { MarusyaSoundsApi } from '../marusya/sounds';
+import { Sound } from '../marusya/sounds.types';
 
 export class MarusyaSoundsUniversalApi implements UniversalApi {
   platformApi: MarusyaSoundsApi;
@@ -13,16 +14,22 @@ export class MarusyaSoundsUniversalApi implements UniversalApi {
 
   async getItems() {
     const items = await this.platformApi.getItems();
-    return items.map(({ id }) => {
-      return { id: String(id), payload: this.platformApi.getTts(id) };
-    });
+    return items.map(item => this.toRemoteAsset(item));
   }
 
   async uploadItem(filePath: string) {
-    await this.platformApi.uploadItem(filePath);
+    const item = await this.platformApi.uploadItem(filePath);
+    return this.toRemoteAsset(item);
   }
 
   async deleteItem(id: string) {
     await this.platformApi.deleteItem(Number(id));
+  }
+
+  private toRemoteAsset({ id }: Sound) {
+    return {
+      id: String(id),
+      payload: this.platformApi.getTts(id),
+    };
   }
 }

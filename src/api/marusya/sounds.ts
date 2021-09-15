@@ -8,6 +8,7 @@ import {
   UploadSoundResult,
   SaveSoundResult,
   DeleteSoundResult,
+  Sound,
 } from './sounds.types';
 
 export class MarusyaSoundsApi extends MarusyaApi {
@@ -21,11 +22,11 @@ export class MarusyaSoundsApi extends MarusyaApi {
     return items.find(items => items.id === id);
   }
 
-  async uploadItem(filePath: string) {
+  async uploadItem(filePath: string): Promise<Sound> {
     const url = await this.getUploadLink();
     const meta = await this.doUpload<UploadSoundResult>(url, filePath, 'file');
-    const res = await this.saveSound(meta);
-    return res;
+    const { id, title } = await this.saveSound(meta);
+    return { id, title, owner_id: this.options.ownerId };
   }
 
   async deleteItem(id: number) {

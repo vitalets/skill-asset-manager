@@ -3,6 +3,7 @@
  */
 import { UniversalApi } from './types';
 import { AliceSoundsApi } from '../alice/sounds';
+import { Sound } from '../alice/sounds.types';
 
 export class AliceSoundsUniversalApi implements UniversalApi {
   platformApi: AliceSoundsApi;
@@ -13,16 +14,22 @@ export class AliceSoundsUniversalApi implements UniversalApi {
 
   async getItems() {
     const items = await this.platformApi.getItems();
-    return items.map(({ id }) => {
-      return { id, payload: this.platformApi.getTts(id) };
-    });
+    return items.map(item => this.toRemoteAsset(item));
   }
 
   async uploadItem(filePath: string) {
-    await this.platformApi.uploadItem(filePath);
+    const item = await this.platformApi.uploadItem(filePath);
+    return this.toRemoteAsset(item);
   }
 
   async deleteItem(id: string) {
     await this.platformApi.deleteItem(id);
+  }
+
+  private toRemoteAsset({ id }: Sound) {
+    return {
+      id,
+      payload: this.platformApi.getTts(id),
+    };
   }
 }

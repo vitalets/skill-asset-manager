@@ -3,6 +3,7 @@
  */
 import { UniversalApi } from './types';
 import { AliceImagesApi } from '../alice/images';
+import { Image } from '../alice/images.types';
 
 export class AliceImagesUniversalApi implements UniversalApi {
   platformApi: AliceImagesApi;
@@ -13,16 +14,22 @@ export class AliceImagesUniversalApi implements UniversalApi {
 
   async getItems() {
     const items = await this.platformApi.getItems();
-    return items.map(({ id }) => {
-      return { id, payload: id };
-    });
+    return items.map(item => this.toRemoteAsset(item));
   }
 
   async uploadItem(filePath: string) {
-    await this.platformApi.uploadItem(filePath);
+    const item = await this.platformApi.uploadItem(filePath);
+    return this.toRemoteAsset(item);
   }
 
   async deleteItem(id: string) {
     await this.platformApi.deleteItem(id);
+  }
+
+  private toRemoteAsset({ id }: Image) {
+    return {
+      id,
+      payload: id,
+    };
   }
 }

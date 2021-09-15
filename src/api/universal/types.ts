@@ -1,12 +1,12 @@
 export interface UniversalApi {
   getItems(): Promise<RemoteAsset[]>;
-  uploadItem(filePath: string): Promise<void>;
+  uploadItem(filePath: string): Promise<RemoteAsset>;
   deleteItem(id: RemoteAsset['id']): Promise<void>;
 }
 
 export interface RemoteAsset {
-  /** Идентификатор ресурса */
+  /** Asset id on remote */
   id: string;
-  /** То, что вставляется в ответ скилла */
+  /** Payload used in skill (for image it's id, for sound it's tts) */
   payload: string;
 }
