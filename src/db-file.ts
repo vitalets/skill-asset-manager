@@ -53,7 +53,7 @@ export class DbFile {
     const { dbFile } = this.options;
     logger.log(`Db file saving: ${dbFile}`);
     await fs.promises.mkdir(path.dirname(dbFile), { recursive: true });
-    const content = JSON.stringify(this.data);
+    const content = JSON.stringify(this.data, null, 2);
     await fs.promises.writeFile(dbFile, content);
     logger.debug(`Db file saved.`);
   }
