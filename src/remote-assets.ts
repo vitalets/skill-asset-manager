@@ -1,23 +1,13 @@
 import { AssetType, Platform } from './types';
 import { AliceTarget, Target } from './config';
-import { AliceImagesUniversalApi } from './alice/images.universal';
-import { AliceSoundsUniversalApi } from './alice/sounds.universal';
-import { MarusyaImagesUniversalApi } from './marusya/images.universal';
-import { MarusyaSoundsUniversalApi } from './marusya/sounds.universal';
 import { logger } from './logger';
+import { UniversalApi, RemoteAsset } from './api/universal/types';
+import { AliceImagesUniversalApi } from './api/universal/alice.images';
+import { AliceSoundsUniversalApi } from './api/universal/alice.sounds';
+import { MarusyaImagesUniversalApi } from './api/universal/marusya.images';
+import { MarusyaSoundsUniversalApi } from './api/universal/marusya.sounds';
 
-export interface UniversalApi {
-  getItems(): Promise<RemoteAsset[]>;
-  uploadItem(filePath: string): Promise<void>;
-  deleteItem(id: RemoteAsset['id']): Promise<void>;
-}
-
-export interface RemoteAsset {
-  /** Идентификатор ресурса */
-  id: string;
-  /** То, что вставляется в ответ скилла */
-  payload: string;
-}
+export { RemoteAsset };
 
 export interface RemoteAssetsConfig {
   target: Target

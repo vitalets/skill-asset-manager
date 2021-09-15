@@ -1,8 +1,8 @@
 /**
  * Wrapper over sounds api to provide universal interface.
  */
-import { UniversalApi } from '../remote-assets';
-import { MarusyaSoundsApi } from './sounds';
+import { UniversalApi } from './types';
+import { MarusyaSoundsApi } from '../marusya/sounds';
 
 export class MarusyaSoundsUniversalApi implements UniversalApi {
   platformApi: MarusyaSoundsApi;

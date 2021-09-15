@@ -1,4 +1,4 @@
-import { MarusyaSoundsApi } from '../../src/marusya/sounds';
+import { MarusyaSoundsApi } from '../../src/api/marusya/sounds';
 import { MarusyaTarget } from '../../src/config';
 import config from '../assets.config.test';
 

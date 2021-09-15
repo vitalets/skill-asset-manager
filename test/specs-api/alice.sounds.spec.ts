@@ -1,4 +1,4 @@
-import { AliceSoundsApi } from '../../src/alice/sounds';
+import { AliceSoundsApi } from '../../src/api/alice/sounds';
 import { AliceTarget } from '../../src/config';
 import config from '../assets.config.test';
 

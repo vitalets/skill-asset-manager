@@ -3,8 +3,8 @@
  */
 import path from 'path';
 import { LocalAssetsConfig } from './local-assets';
-import { AliceApiOptions } from './alice/base';
-import { MarusyaApiOptions } from './marusya/base';
+import { AliceApiOptions } from './api/alice/base';
+import { MarusyaApiOptions } from './api/marusya/base';
 import { DbFileOptions } from './db-file';
 import { logger } from './logger';
 import { Platform } from './types';

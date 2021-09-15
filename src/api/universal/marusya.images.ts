@@ -1,8 +1,8 @@
 /**
  * Wrapper over images api to provide universal interface.
  */
-import { UniversalApi } from '../remote-assets';
-import { MarusyaImagesApi } from './images';
+import { UniversalApi } from './types';
+import { MarusyaImagesApi } from '../marusya/images';
 
 export class MarusyaImagesUniversalApi implements UniversalApi {
   platformApi: MarusyaImagesApi;

@@ -1,4 +1,4 @@
-import { AliceImagesApi } from '../../src/alice/images';
+import { AliceImagesApi } from '../../src/api/alice/images';
 import { AliceTarget } from '../../src/config';
 import config from '../assets.config.test';
 

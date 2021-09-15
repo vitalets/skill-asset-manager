@@ -1,8 +1,8 @@
 /**
  * Wrapper over images api to provide universal interface.
  */
-import { UniversalApi } from '../remote-assets';
-import { AliceImagesApi } from './images';
+import { UniversalApi } from './types';
+import { AliceImagesApi } from '../alice/images';
 
 export class AliceImagesUniversalApi implements UniversalApi {
   platformApi: AliceImagesApi;

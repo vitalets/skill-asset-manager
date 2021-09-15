@@ -1,8 +1,8 @@
 /**
  * Wrapper over sounds api to provide universal interface.
  */
-import { UniversalApi } from '../remote-assets';
-import { AliceSoundsApi } from './sounds';
+import { UniversalApi } from './types';
+import { AliceSoundsApi } from '../alice/sounds';
 
 export class AliceSoundsUniversalApi implements UniversalApi {
   platformApi: AliceSoundsApi;

@@ -1,4 +1,4 @@
-import { MarusyaImagesApi } from '../../src/marusya/images';
+import { MarusyaImagesApi } from '../../src/api/marusya/images';
 import { MarusyaTarget } from '../../src/config';
 import config from '../assets.config.test';
 

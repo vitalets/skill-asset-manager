@@ -4,7 +4,7 @@
 import fs from 'fs';
 import path from 'path';
 import FormData from 'form-data';
-import { fetchJson, FetchOptions } from '../utils';
+import { fetchJson, FetchOptions } from '../../utils';
 import { GetQuotaResult } from './quota.types';
 
 const BASE_URL = 'https://dialogs.yandex.net/api/v1';
