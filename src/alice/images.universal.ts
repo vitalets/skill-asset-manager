@@ -5,24 +5,24 @@ import { UniversalApi } from '../remote-assets';
 import { AliceImagesApi } from './images';
 
 export class AliceImagesUniversalApi implements UniversalApi {
-  api: AliceImagesApi;
+  platformApi: AliceImagesApi;
 
   constructor(...args: ConstructorParameters<typeof AliceImagesApi>) {
-    this.api = new AliceImagesApi(...args);
+    this.platformApi = new AliceImagesApi(...args);
   }
 
   async getItems() {
-    const items = await this.api.getItems();
+    const items = await this.platformApi.getItems();
     return items.map(({ id }) => {
       return { id, payload: id };
     });
   }
 
   async uploadItem(filePath: string) {
-    await this.api.uploadItem(filePath);
+    await this.platformApi.uploadItem(filePath);
   }
 
   async deleteItem(id: string) {
-    await this.api.deleteItem(id);
+    await this.platformApi.deleteItem(id);
   }
 }

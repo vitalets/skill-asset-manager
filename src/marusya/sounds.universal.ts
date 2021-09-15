@@ -5,24 +5,24 @@ import { UniversalApi } from '../remote-assets';
 import { MarusyaSoundsApi } from './sounds';
 
 export class MarusyaSoundsUniversalApi implements UniversalApi {
-  api: MarusyaSoundsApi;
+  platformApi: MarusyaSoundsApi;
 
   constructor(...args: ConstructorParameters<typeof MarusyaSoundsApi>) {
-    this.api = new MarusyaSoundsApi(...args);
+    this.platformApi = new MarusyaSoundsApi(...args);
   }
 
   async getItems() {
-    const items = await this.api.getItems();
+    const items = await this.platformApi.getItems();
     return items.map(item => {
-      return { id: String(item.id), payload: this.api.getTts(item) };
+      return { id: String(item.id), payload: this.platformApi.getTts(item) };
     });
   }
 
   async uploadItem(filePath: string) {
-    await this.api.uploadItem(filePath);
+    await this.platformApi.uploadItem(filePath);
   }
 
   async deleteItem(id: string) {
-    await this.api.deleteItem(Number(id));
+    await this.platformApi.deleteItem(Number(id));
   }
 }

@@ -5,24 +5,24 @@ import { UniversalApi } from '../remote-assets';
 import { MarusyaImagesApi } from './images';
 
 export class MarusyaImagesUniversalApi implements UniversalApi {
-  api: MarusyaImagesApi;
+  platformApi: MarusyaImagesApi;
 
   constructor(...args: ConstructorParameters<typeof MarusyaImagesApi>) {
-    this.api = new MarusyaImagesApi(...args);
+    this.platformApi = new MarusyaImagesApi(...args);
   }
 
   async getItems() {
-    const items = await this.api.getItems();
+    const items = await this.platformApi.getItems();
     return items.map(({ id }) => {
       return { id: String(id), payload: String(id) };
     });
   }
 
   async uploadItem(filePath: string) {
-    await this.api.uploadItem(filePath);
+    await this.platformApi.uploadItem(filePath);
   }
 
   async deleteItem(id: string) {
-    await this.api.deleteItem(Number(id));
+    await this.platformApi.deleteItem(Number(id));
   }
 }

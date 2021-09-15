@@ -5,24 +5,24 @@ import { UniversalApi } from '../remote-assets';
 import { AliceSoundsApi } from './sounds';
 
 export class AliceSoundsUniversalApi implements UniversalApi {
-  api: AliceSoundsApi;
+  platformApi: AliceSoundsApi;
 
   constructor(...args: ConstructorParameters<typeof AliceSoundsApi>) {
-    this.api = new AliceSoundsApi(...args);
+    this.platformApi = new AliceSoundsApi(...args);
   }
 
   async getItems() {
-    const items = await this.api.getItems();
+    const items = await this.platformApi.getItems();
     return items.map(({ id }) => {
-      return { id, payload: this.api.getTts(id) };
+      return { id, payload: this.platformApi.getTts(id) };
     });
   }
 
   async uploadItem(filePath: string) {
-    await this.api.uploadItem(filePath);
+    await this.platformApi.uploadItem(filePath);
   }
 
   async deleteItem(id: string) {
-    await this.api.deleteItem(id);
+    await this.platformApi.deleteItem(id);
   }
 }
