@@ -24,6 +24,10 @@ export class Sync {
 
   constructor(private dbFile: DbFile, private localAssets: LocalAssets, private remoteAssets: RemoteAssets) { }
 
+  get assetType() {
+    return this.dbFile.assetType;
+  }
+
   async run() {
     await this.loadItems();
     this.selectItems();
@@ -76,10 +80,11 @@ export class Sync {
 
   private showItems() {
     logger.separator();
-    logger.log(`FILES SYNCED: ${this.syncedFiles.length}`);
-    logger.log(`FILES TO FORGET: ${this.deletedFiles.length}`);
+    const assetType = this.assetType.toUpperCase();
+    logger.log(`${assetType} SYNCED: ${this.syncedFiles.length}`);
+    logger.log(`${assetType} TO FORGET: ${this.deletedFiles.length}`);
     this.deletedFiles.forEach(a => logger.log(`Deleted: [${a.fileId}] ${a.file}`));
-    logger.log(`FILES TO UPLOAD: ${this.needsUploadFiles.length}`);
+    logger.log(`${assetType} TO UPLOAD: ${this.needsUploadFiles.length}`);
     this.newFiles.forEach(a => logger.log(`New: [${a.fileId}] ${a.file}`));
     this.changedFiles.forEach(a => logger.log(`Changed: [${a.fileId}] ${a.file}`));
     this.missingOnRemoteFiles.forEach(a => logger.log(`Missing on remote: [${a.fileId}] ${a.file}`));
@@ -88,7 +93,7 @@ export class Sync {
 
   private noItems() {
     if (this.deletedFiles.length === 0 && this.needsUploadFiles.length === 0) {
-      logger.log('All files synced.');
+      logger.log(`All ${this.assetType} synced.`);
       return true;
     } else {
       return false;

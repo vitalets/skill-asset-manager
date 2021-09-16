@@ -13,6 +13,10 @@ export class Clean {
 
   constructor(private dbFile: DbFile, private remoteAssets: RemoteAssets) { }
 
+  get assetType() {
+    return this.dbFile.assetType;
+  }
+
   async run() {
     await this.loadItems();
     this.selectItems();
@@ -38,14 +42,15 @@ export class Clean {
 
   private showItems() {
     logger.separator();
-    logger.log(`UNUSED FILES: ${this.unusedItems.length}`);
+    const assetType = this.assetType.toUpperCase();
+    logger.log(`${assetType} UNUSED: ${this.unusedItems.length}`);
     this.unusedItems.forEach(({ id, desc }) => logger.log(`${desc ? `[${desc}] ` : ''}${id}`));
     logger.separator();
   }
 
   private noItems() {
     if (this.unusedItems.length === 0) {
-      logger.log('No unused files found.');
+      logger.log(`No unused ${this.assetType} found.`);
       return true;
     } else {
       return false;

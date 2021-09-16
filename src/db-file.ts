@@ -28,12 +28,16 @@ export class DbFile {
 
   constructor(private options: DbFileOptions) { }
 
+  get assetType() {
+    return this.options.assetType;
+  }
+
   get payloads() {
-    return this.data[this.options.assetType];
+    return this.data[this.assetType];
   }
 
   get meta() {
-    return this.data[`${this.options.assetType}Meta`];
+    return this.data[`${this.assetType}Meta`];
   }
 
   async load() {
@@ -74,12 +78,11 @@ export class DbFile {
   }
 
   private validate() {
-    const { assetType } = this.options;
     const payloadKeys = Object.keys(this.payloads);
     const metaKeys = Object.keys(this.meta);
     const [ uniquePayloadKeys, _, uniqueMetaKeys ] = compareArrays(payloadKeys, metaKeys);
-    assertIncorrectFileIds(uniquePayloadKeys, `${assetType}Meta`);
-    assertIncorrectFileIds(uniqueMetaKeys, assetType);
+    assertIncorrectFileIds(uniquePayloadKeys, `${this.assetType}Meta`);
+    assertIncorrectFileIds(uniqueMetaKeys, this.assetType);
   }
 }
 
