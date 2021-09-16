@@ -1,6 +1,6 @@
 {
   "name": "skill-asset-manager",
-  "description": "Easily upload and synchronize skill assets",
+  "description": "Upload and synchronize skill assets",
   "version": "1.0.0",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
@@ -16,7 +16,7 @@
     "test:e2e": "mocha -r ts-node/register test/setup.ts test/specs-e2e/*.ts",
     "check": "LOG_LEVEL=info ts-node ./src/cli sync all alice -c test/assets.config.test.js",
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
-    "release": "npm run lint && npm run build && npm version $VER && npm publish && git push --follow-tags --no-verify",
+    "release": "npm run lint && npm t && npm run build && npm version $VER && npm publish && git push --follow-tags --no-verify",
     "release-patch": "VER=patch npm run release",
     "release-minor": "VER=minor npm run release"
   },
