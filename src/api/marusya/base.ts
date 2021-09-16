@@ -20,7 +20,8 @@ export interface MarusyaApiOptions {
 
 export abstract class MarusyaApi {
   constructor(protected options: MarusyaApiOptions) {
-    if (!this.options.soundsOwnerId) throw new Error(`Missing "soundsOwnerId" in target config.`);
+    // Т.к. конфиг пишется на js, тут проверяем наличие полей
+    this.assertOptions([ 'token', 'soundsOwnerId' ]);
   }
 
   protected async doUpload<T>(url: string, filePath: string, field: string) {
@@ -45,5 +46,13 @@ export abstract class MarusyaApi {
 
   private attachAuthQuery(url: string) {
     return `${url}${url.includes('?') ? '&' : '?'}access_token=${this.options.token}&v=${API_VERSION}`;
+  }
+
+  private assertOptions(names: (keyof MarusyaApiOptions)[]) {
+    for (const name of names) {
+      if (!this.options[name]) {
+        throw new Error(`Missing option "${name}" in target config.`);
+      }
+    }
   }
 }

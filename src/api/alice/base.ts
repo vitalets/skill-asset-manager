@@ -17,7 +17,10 @@ export interface AliceApiOptions {
 export abstract class AliceApi {
   relativeUrl = '';
 
-  constructor(protected options: AliceApiOptions) { }
+  constructor(protected options: AliceApiOptions) {
+    // Т.к. конфиг пишется на js, тут проверяем наличие полей
+    this.assertOptions([ 'token', 'skillId' ]);
+  }
 
   protected async getQuotaInternal() {
     return await this.request('/status') as GetQuotaResult;
@@ -60,5 +63,13 @@ export abstract class AliceApi {
       Authorization: `OAuth ${this.options.token}`,
     }, options.headers);
     return options;
+  }
+
+  private assertOptions(names: (keyof AliceApiOptions)[]) {
+    for (const name of names) {
+      if (!this.options[name]) {
+        throw new Error(`Missing option "${name}" in target config.`);
+      }
+    }
   }
 }
