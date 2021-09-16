@@ -7,7 +7,7 @@ import { Target } from '../../src/config';
 describe('clean', () => {
 
   async function createObjects() {
-    const target: Target = { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 };
+    const target: Target = { platform: Platform.marusya, dbFile: '', token: '', soundsOwnerId: 1 };
     const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
     const remoteAssets = new RemoteAssets(target, AssetType.images);
     const command = new Clean(dbFile, remoteAssets);

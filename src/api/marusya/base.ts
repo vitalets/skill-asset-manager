@@ -12,15 +12,15 @@ const API_VERSION = '5.131';
 export interface MarusyaApiOptions {
   token: string;
   /**
-   * Чтобы узнать ownerId, нужно загрузить в навык один звук.
+   * Чтобы узнать soundsOwnerId, нужно загрузить в навык один звук.
    * Пример: audio_vk_id: -2000512009_456239036 -> ownerId = -2000512009
    */
-  ownerId: number;
+  soundsOwnerId: number;
 }
 
 export abstract class MarusyaApi {
   constructor(protected options: MarusyaApiOptions) {
-    if (!this.options.ownerId) throw new Error(`Missing target option: ownerId`);
+    if (!this.options.soundsOwnerId) throw new Error(`Missing "soundsOwnerId" in target config.`);
   }
 
   protected async doUpload<T>(url: string, filePath: string, field: string) {

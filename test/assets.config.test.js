@@ -20,7 +20,7 @@ module.exports = {
       platform: 'marusya',
       dbFile: 'temp/marusya.json',
       token: MARUSYA_SKILL_TOKEN,
-      ownerId: -2000512016,
+      soundsOwnerId: -2000512016,
     }
   }
 };

@@ -12,8 +12,13 @@ import {
 } from './sounds.types';
 
 export class MarusyaSoundsApi extends MarusyaApi {
+  get ownerId() {
+    return this.options.soundsOwnerId;
+  }
+
   async getItems() {
     const { response } = await this.request('/marusia.getAudios') as GetSoundsResult;
+    this.validateOwnerId(response.audios);
     return response.audios;
   }
 
@@ -26,7 +31,7 @@ export class MarusyaSoundsApi extends MarusyaApi {
     const url = await this.getUploadLink();
     const meta = await this.doUpload<UploadSoundResult>(url, filePath, 'file');
     const { id, title } = await this.saveSound(meta);
-    return { id, title, owner_id: this.options.ownerId };
+    return { id, title, owner_id: this.ownerId };
   }
 
   async deleteItem(id: number) {
@@ -35,7 +40,7 @@ export class MarusyaSoundsApi extends MarusyaApi {
   }
 
   getTts(id: number) {
-    return `<speaker audio_vk_id="${this.options.ownerId}_${id}">`;
+    return `<speaker audio_vk_id="${this.ownerId}_${id}">`;
   }
 
   protected async getUploadLink() {
@@ -47,5 +52,14 @@ export class MarusyaSoundsApi extends MarusyaApi {
     const metaParam = `audio_meta=${encodeURIComponent(JSON.stringify(meta))}`;
     const { response } = await this.request(`/marusia.createAudio?${metaParam}`) as SaveSoundResult;
     return response;
+  }
+
+  private validateOwnerId(items?: Sound[]) {
+    const ownerIdFromApi = items?.[0]?.owner_id;
+    if (ownerIdFromApi && ownerIdFromApi !== this.ownerId) {
+      throw new Error(
+        `Owner id mismatch! In config: "${this.ownerId}", in api response: ${ownerIdFromApi}`
+      );
+    }
   }
 }

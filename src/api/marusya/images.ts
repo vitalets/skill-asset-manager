@@ -26,8 +26,9 @@ export class MarusyaImagesApi extends MarusyaApi {
   async uploadItem(filePath: string): Promise<Image> {
     const url = await this.getUploadLink();
     const meta = await this.doUpload<UploadImageResult>(url, filePath, 'photo');
-    const { photo_id } = await this.saveSound(meta);
-    return { id: photo_id, owner_id: this.options.ownerId };
+    const { photo_id } = await this.saveImage(meta);
+    // Записываем owner_id=0, т.к. апи его не возвращает, да и он нигде не используется (для картинок!)
+    return { id: photo_id, owner_id: 0 };
   }
 
   async deleteItem(id: number) {
@@ -40,7 +41,7 @@ export class MarusyaImagesApi extends MarusyaApi {
     return response?.picture_upload_link;
   }
 
-  protected async saveSound({ server, hash, photo }: UploadImageResult) {
+  protected async saveImage({ server, hash, photo }: UploadImageResult) {
     const formData = new FormData();
     formData.append('server', server);
     formData.append('hash', hash);
