@@ -15,7 +15,7 @@ export interface MarusyaApiOptions {
    * Чтобы узнать soundsOwnerId, нужно загрузить в навык один звук.
    * Пример: audio_vk_id: -2000512009_456239036 -> ownerId = -2000512009
    */
-  soundsOwnerId: number;
+  soundsOwnerId: number | string;
 }
 
 export abstract class MarusyaApi {

@@ -13,7 +13,7 @@ import {
 
 export class MarusyaSoundsApi extends MarusyaApi {
   get ownerId() {
-    return this.options.soundsOwnerId;
+    return Number(this.options.soundsOwnerId);
   }
 
   async getItems() {
