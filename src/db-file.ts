@@ -38,7 +38,7 @@ export class DbFile {
 
   async load() {
     const { dbFile } = this.options;
-    logger.log(`Db file loading: ${dbFile}`);
+    logger.log(`Db file: ${dbFile}`);
     if (fs.existsSync(dbFile)) {
       const content = await fs.promises.readFile(dbFile, 'utf8');
       Object.assign(this.data, JSON.parse(content));
@@ -67,16 +67,27 @@ export class DbFile {
     };
   }
 
-  deleteItem(fileId: LocalAsset['fileId']) {
+  deleteItem({ file, fileId }: LocalAsset) {
+    logger.log(`Forgetting: [${fileId}] ${file}`);
     delete this.payloads[fileId];
     delete this.meta[fileId];
   }
 
   private validate() {
+    const { assetType } = this.options;
     const payloadKeys = Object.keys(this.payloads);
     const metaKeys = Object.keys(this.meta);
     const [ uniquePayloadKeys, _, uniqueMetaKeys ] = compareArrays(payloadKeys, metaKeys);
-    if (uniquePayloadKeys.length) throw new Error(`Unique payload ids: ${uniquePayloadKeys.join(', ')}`);
-    if (uniqueMetaKeys.length) throw new Error(`Unique meta ids: ${uniqueMetaKeys.join(', ')}`);
+    assertIncorrectFileIds(uniquePayloadKeys, `${assetType}Meta`);
+    assertIncorrectFileIds(uniqueMetaKeys, assetType);
+  }
+}
+
+function assertIncorrectFileIds(uniqueFileIds: LocalAsset['fileId'][], dbFileProp: string) {
+  if (uniqueFileIds.length) {
+    throw new Error([
+      `DbFile incorrect. Some fileIds expected in prop "${dbFileProp}":`,
+      uniqueFileIds.join(', '),
+    ].join(' '));
   }
 }

@@ -23,6 +23,10 @@ export class Logger {
   debug(...args: unknown[]) {
     this.logger.debug(...args);
   }
+
+  separator() {
+    this.log('---');
+  }
 }
 
 export const logger = new Logger();

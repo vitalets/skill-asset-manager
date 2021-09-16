@@ -19,7 +19,9 @@ export interface MarusyaApiOptions {
 }
 
 export abstract class MarusyaApi {
-  constructor(protected options: MarusyaApiOptions) { }
+  constructor(protected options: MarusyaApiOptions) {
+    if (!this.options.ownerId) throw new Error(`Missing target option: ownerId`);
+  }
 
   protected async doUpload<T>(url: string, filePath: string, field: string) {
     const buffer = fs.createReadStream(filePath);

@@ -3,7 +3,7 @@ import yargs from 'yargs/yargs';
 import { Argv } from 'yargs';
 import { hideBin } from 'yargs/helpers';
 import { Config } from './config';
-import { AssetManager } from '.';
+import { Runner } from '.';
 import { AssetType } from './types';
 
 type PositionalArgs = {
@@ -56,11 +56,11 @@ async function main() {
 }
 
 async function runCommandForTarget(config: Config, assetType: AssetType, targetName: string, command: string | number) {
-  const manager = new AssetManager(config, assetType, targetName);
+  const runner = new Runner(config, assetType, targetName);
   switch (command) {
-    case 'sync': return manager.sync();
-    case 'clean': return manager.clean();
-    case 'verify': return manager.verify();
+    case 'sync': return runner.sync();
+    case 'clean': return runner.clean();
+    // case 'verify': return manager.verify();
     default: throw new Error(`Unknown command: ${command}`);
   }
 }

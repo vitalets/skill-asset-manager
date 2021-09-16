@@ -15,3 +15,16 @@ export function compareArrays<T>(arr1: T[], arr2: T[]) {
   arr2.forEach(item => common.includes(item) ? null : uniqueInArr2.push(item));
   return [ uniqueInArr1, common, uniqueInArr2 ];
 }
+
+/**
+ * Group arrat elements by funciton.
+ */
+ export function groupBy<T>(arr: T[], predicate: (item: T) => unknown) {
+  const result: Record<string, T[]> = {};
+  for (const item of arr) {
+    const key = String(predicate(item));
+    result[key] = result[key] || [];
+    result[key].push(item);
+  }
+  return result;
+}

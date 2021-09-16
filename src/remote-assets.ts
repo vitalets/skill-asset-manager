@@ -24,19 +24,19 @@ export class RemoteAssets {
   }
 
   async load() {
-    logger.debug(`Remote assets loading: ${this.options.assetType}`);
+    const { assetType } = this.options;
+    logger.debug(`Remote ${assetType} loading`);
     this.items = await this.api.getItems();
-    logger.debug(`Remote assets loaded: ${this.items.length}`);
+    logger.debug(`Remote ${assetType}: ${this.items.length}`);
   }
 
-  async uploadItem(file: LocalAsset['file']) {
-    logger.log(`Uploading: ${file}`);
+  async uploadItem({ fileId, file }: LocalAsset) {
+    logger.log(`Uploading: [${fileId}] ${file}`);
     return this.api.uploadItem(file);
   }
 
   async deleteItem({ id, desc }: RemoteAsset) {
-    desc = desc ? ` (${desc})` : '';
-    logger.log(`Deleting: ${id}${desc}`);
+    logger.log(`Deleting: ${id}${desc ? ` (${desc})` : ''}`);
     await this.api.deleteItem(id);
   }
 
