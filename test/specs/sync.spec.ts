@@ -1,76 +1,138 @@
-// todo: write sync tests!
+import { AssetType, Platform } from '../../src/types';
+import { Sync } from '../../src/commands/sync';
+import { DbFile } from '../../src/db-file';
+import { LocalAssets } from '../../src/local-assets';
+import { RemoteAssets } from '../../src/remote-assets';
 
-// import { AliceTarget } from '../../src/config';
-// import { DbFile } from '../../src/db-file';
-// import { LocalAssets } from '../../src/local-assets';
-// import { RemoteAssets } from '../../src/remote-assets';
-// import { AssetType } from '../../src/types';
-// import config from '../assets.config.test';
+describe('sync', () => {
 
-// describe('sync', () => {
+  async function createObjects() {
+    const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
+    const localAssets = new LocalAssets({ pattern: '' });
+    const remoteAssets = new RemoteAssets({
+      target: { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 },
+      assetType: AssetType.images
+    });
+    const command = new Sync(dbFile, localAssets, remoteAssets);
+    sinon.stub(dbFile, 'load');
+    const dbFileSave = sinon.stub(dbFile, 'save');
+    sinon.stub(localAssets, 'load');
+    sinon.stub(remoteAssets, 'load');
+    // @ts-expect-error confirm is private
+    sinon.stub(command, 'confirm').callsFake( async () => true);
+    return { command, dbFile, localAssets, remoteAssets, dbFileSave };
+  }
 
-//   const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
-//   const localAssets = new LocalAssets({ pattern: '' });
-//   const remoteAssets = new RemoteAssets({ target: config.targets.alice as AliceTarget, assetType: AssetType.images });
+  it('new file', async () => {
+    const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'bar', payload: 'payload' }));
 
-//   beforeEach(() => {
-//     localAssets.items = {};
-//     dbFile.data.imagesMeta = {};
-//     remoteAssets.items = [];
-//   });
+    await command.run();
 
-//   it('new file', () => {
-//     localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
-//     syncingAssets.compare();
-//     assert.deepEqual(syncingAssets.items, [ {
-//       fileId: 'foo',
-//       localState: 'NEW',
-//     }]);
-//   });
+    sinon.assert.calledOnce(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      images: {
+        foo: 'payload'
+      },
+      imagesMeta: {
+        foo: {
+          file: 'foo.png',
+          fileId: 'foo',
+          mtimeMs: 0,
+          remoteId: 'bar'
+        }
+      },
+      sounds: {},
+      soundsMeta: {}
+    });
+  });
 
-//   it('changed file', () => {
-//     localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 1 };
-//     dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'bar' };
-//     syncingAssets.compare();
-//     assert.deepEqual(syncingAssets.items, [{
-//       fileId: 'foo',
-//       remoteId: 'bar',
-//       localState: 'CHANGED',
-//       remoteState: 'NOT_UPLOADED',
-//     }]);
-//   });
+  it('changed file', async () => {
+    const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-//   it('not changed file', () => {
-//     localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
-//     dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'bar' };
-//     syncingAssets.compare();
-//     assert.deepEqual(syncingAssets.items, [{
-//       fileId: 'foo',
-//       remoteId: 'bar',
-//       localState: 'NOT_CHANGED',
-//       remoteState: 'NOT_UPLOADED',
-//     }]);
-//   });
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 1 };
+    dbFile.data.images.foo = 'old payload';
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'old remote id' };
+    sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'new remote id', payload: 'new payload' }));
 
-//   it('not changed uploaded file', () => {
-//     localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
-//     dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'bar' };
-//     remoteAssets.items = [ { id: 'bar', payload: 'payload' } ];
-//     assert.deepEqual(syncingAssets.items, [{
-//       fileId: 'foo',
-//       remoteId: 'bar',
-//       localState: 'NOT_CHANGED',
-//       remoteState: 'UPLOADED',
-//     }]);
-//   });
+    await command.run();
 
-//   it('not used file', () => {
-//     remoteAssets.items = [ { id: 'bar', payload: 'payload' } ];
-//     syncingAssets.compare();
-//     assert.deepEqual(syncingAssets.items, [{
-//       remoteId: 'bar',
-//       remoteState: 'NOT_USED',
-//     }]);
-//   });
+    sinon.assert.calledOnce(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      images: {
+        foo: 'new payload'
+      },
+      imagesMeta: {
+        foo: {
+          file: 'foo.png',
+          fileId: 'foo',
+          mtimeMs: 1,
+          remoteId: 'new remote id'
+        }
+      },
+      sounds: {},
+      soundsMeta: {}
+    });
+  });
 
-// });
+  it('not changed, but missing on remote file', async () => {
+    const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
+
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    dbFile.data.images.foo = 'old payload';
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'old remote id' };
+    sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'new remote id', payload: 'new payload' }));
+
+    await command.run();
+
+    sinon.assert.calledOnce(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      images: {
+        foo: 'new payload'
+      },
+      imagesMeta: {
+        foo: {
+          file: 'foo.png',
+          fileId: 'foo',
+          mtimeMs: 0,
+          remoteId: 'new remote id'
+        }
+      },
+      sounds: {},
+      soundsMeta: {}
+    });
+  });
+
+  it('synced file', async () => {
+    const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
+
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    dbFile.data.images.foo = 'payload';
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'remoteId' };
+    remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
+
+    const uploadItem = sinon.stub(remoteAssets, 'uploadItem');
+
+    await command.run();
+
+    sinon.assert.notCalled(uploadItem);
+    sinon.assert.notCalled(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      images: {
+        foo: 'payload'
+      },
+      imagesMeta: {
+        foo: {
+          file: 'foo.png',
+          fileId: 'foo',
+          mtimeMs: 0,
+          remoteId: 'remoteId'
+        }
+      },
+      sounds: {},
+      soundsMeta: {}
+    });
+  });
+
+});
