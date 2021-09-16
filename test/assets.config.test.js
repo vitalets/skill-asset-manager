@@ -4,7 +4,7 @@ const { ALICE_OAUTH_TOKEN, ALICE_SKILL_ID, MARUSYA_SKILL_TOKEN } = process.env;
 
 module.exports = {
   images: {
-    pattern: 'test/data/image_1200*.png',
+    pattern: 'test/data/*.png',
   },
   sounds: {
     pattern: 'test/data/*.mp3',
