@@ -11,9 +11,7 @@ type PositionalArgs = {
   target: string;
 }
 
-const ALL = 'all';
-
-type CliAssetType = AssetType | typeof ALL;
+type CliAssetType = AssetType | 'all';
 
 const options = yargs(hideBin(process.argv))
   .command<PositionalArgs>(
@@ -42,7 +40,7 @@ function setPositionalArgs(yargs: Argv) {
   yargs.positional('type', {
     describe: 'Asset type',
     type: 'string',
-    choices: [ ...Object.keys(AssetType), ALL ],
+    choices: [ ...Object.keys(AssetType), 'all' ],
   }).positional('target', {
     describe: 'Target name from config',
     type: 'string',
@@ -52,11 +50,11 @@ function setPositionalArgs(yargs: Argv) {
 main();
 
 async function main() {
-  const { asset, target, _, config: configPath } = options;
+  const { type, target, _, config: configPath } = options;
   const config = new Config(configPath);
   await config.load();
   const targetNames = target.split(',');
-  const assetTypes = (asset === ALL ? Object.keys(AssetType) : [ asset ]) as AssetType[];
+  const assetTypes = (type === 'all' ? Object.keys(AssetType) as AssetType[] : [ type ]);
   const command = _[0];
   for (const targetName of targetNames) {
     for (const assetType of assetTypes) {
