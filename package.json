@@ -24,7 +24,7 @@
     "release-minor": "VER=minor npm run release"
   },
   "lint-staged": {
-    "src/**/*.ts": "eslint --ext .ts"
+    "{src,test}/**/*.ts": "eslint --ext .ts"
   },
   "engines": {
     "node": ">=14"
