@@ -19,16 +19,15 @@ export class Runner {
   constructor(private config: Config, private assetType: AssetType, private targetName: string) {
     this.target = this.config.getTarget(this.targetName);
     this.dbFile = new DbFile({ dbFile: this.target.dbFile, assetType });
-    this.localAssets = this.createLocalAssets();
-    this.remoteAssets = this.createRemoteAssets();
+    this.localAssets = new LocalAssets(this.target, this.getLocalAssetsConfig());
+    this.remoteAssets = new RemoteAssets(this.target, assetType);
   }
 
   /**
    * Uploads changed assets and updates dbFile.
    */
   async sync() {
-    logger.log('===');
-    logger.log(`Syncing ${this.assetType.toUpperCase()} for target: ${this.targetName.toUpperCase()}`);
+    this.logCommandTitle(`Syncing {assetType} for target: {target}`);
     await new Sync(this.dbFile, this.localAssets, this.remoteAssets).run();
   }
 
@@ -36,8 +35,7 @@ export class Runner {
    * Deletes remote assets not found in dbFile.
    */
   async clean() {
-    logger.log('===');
-    logger.log(`Delete unused remote ${this.assetType.toUpperCase()} for target: ${this.targetName.toUpperCase()}`);
+    this.logCommandTitle(`Delete unused remote {assetType} for target: {target}`);
     logger.log([
       '**CAUTION**! Run carefully, only when some time passed after release!',
       'Otherwise rollback can be broken!',
@@ -49,16 +47,17 @@ export class Runner {
    * TODO: Verifies that all items in dbFile are uploaded to remote.
    */
 
-  private createLocalAssets() {
+  private getLocalAssetsConfig() {
     const assetsConfig = this.config.data[this.assetType];
-    if (!assetsConfig) throw new Error(`Config should contain "${this.assetType}".`);
-    return new LocalAssets(assetsConfig);
+    if (!assetsConfig) throw new Error(`Config should contain "${this.assetType}" prop.`);
+    return assetsConfig;
   }
 
-  private createRemoteAssets() {
-    return new RemoteAssets({
-      target: this.target,
-      assetType: this.assetType,
-    });
+  private logCommandTitle(msg: string) {
+    msg = msg
+      .replace('{assetType}', this.assetType.toUpperCase())
+      .replace('{target}', this.targetName.toUpperCase());
+    logger.log('===');
+    logger.log(msg);
   }
 }

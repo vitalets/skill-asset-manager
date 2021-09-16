@@ -4,6 +4,7 @@ import fg from 'fast-glob';
 import { Defaults } from './utils/types';
 import { logger } from './utils/logger';
 import { appendMessageToError } from './utils';
+import { Target } from './config';
 
 export interface LocalAsset {
   /**
@@ -22,6 +23,10 @@ export interface LocalAsset {
 }
 
 export interface LocalAssetsConfig {
+  /**
+   * Glob pattern to local assets.
+   * '{platform}' is replaced with actual platform: alice|marusya
+   */
   pattern: string;
   cwd?: string;
   getFileId?: (file: string) => string;
@@ -36,19 +41,13 @@ export class LocalAssets {
   options: Required<LocalAssetsConfig>;
   items: Record<LocalAsset['fileId'], LocalAsset> = {};
 
-  constructor(options: LocalAssetsConfig) {
+  constructor(private target: Target, options: LocalAssetsConfig) {
     this.options = Object.assign({}, defaults, options);
   }
 
   async load() {
-    logger.log(`Local files: ${this.options.pattern}`);
-    const files = await fg(this.options.pattern, { onlyFiles: true });
-    logger.debug(`Local files found: ${files.length}`);
-    files.forEach(file => {
-      const fileId = this.getFileId(file);
-      const { mtimeMs } = fs.statSync(file);
-      this.items[fileId] = { fileId, file, mtimeMs };
-    });
+    const files = await this.readFiles();
+    files.forEach(file => this.addItem(file));
   }
 
   private getFileId(file: string) {
@@ -64,5 +63,19 @@ export class LocalAssets {
       throw new Error(`Duplicate file id "${fileId}" for:\n${file}\n${this.items[fileId].file}`);
     }
     return fileId;
+  }
+
+  private async readFiles() {
+    const pattern = this.options.pattern.replace('{platform}', this.target.platform);
+    logger.log(`Local files: ${pattern}`);
+    const files = await fg(pattern, { onlyFiles: true });
+    logger.debug(`Local files found: ${files.length}`);
+    return files;
+  }
+
+  private addItem(file: string) {
+    const fileId = this.getFileId(file);
+    const { mtimeMs } = fs.statSync(file);
+    this.items[fileId] = { fileId, file, mtimeMs };
   }
 }

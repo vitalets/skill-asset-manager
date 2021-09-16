@@ -3,16 +3,15 @@ import { Sync } from '../../src/commands/sync';
 import { DbFile } from '../../src/db-file';
 import { LocalAssets } from '../../src/local-assets';
 import { RemoteAssets } from '../../src/remote-assets';
+import { Target } from '../../src/config';
 
 describe('sync', () => {
 
   async function createObjects() {
+    const target: Target = { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 };
     const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
-    const localAssets = new LocalAssets({ pattern: '' });
-    const remoteAssets = new RemoteAssets({
-      target: { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 },
-      assetType: AssetType.images
-    });
+    const localAssets = new LocalAssets(target, { pattern: '' });
+    const remoteAssets = new RemoteAssets(target, AssetType.images);
     const command = new Sync(dbFile, localAssets, remoteAssets);
     sinon.stub(dbFile, 'load');
     const dbFileSave = sinon.stub(dbFile, 'save');

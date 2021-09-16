@@ -2,15 +2,14 @@ import { AssetType, Platform } from '../../src/types';
 import { Clean } from '../../src/commands/clean';
 import { DbFile } from '../../src/db-file';
 import { RemoteAssets } from '../../src/remote-assets';
+import { Target } from '../../src/config';
 
 describe('clean', () => {
 
   async function createObjects() {
+    const target: Target = { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 };
     const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
-    const remoteAssets = new RemoteAssets({
-      target: { platform: Platform.marusya, dbFile: '', token: '', ownerId: 1 },
-      assetType: AssetType.images
-    });
+    const remoteAssets = new RemoteAssets(target, AssetType.images);
     const command = new Clean(dbFile, remoteAssets);
     sinon.stub(dbFile, 'load');
     const dbFileSave = sinon.stub(dbFile, 'save');

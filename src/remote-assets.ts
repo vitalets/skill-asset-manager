@@ -10,24 +10,18 @@ import { LocalAsset } from './local-assets';
 
 export { RemoteAsset };
 
-export interface RemoteAssetsConfig {
-  target: Target
-  assetType: AssetType
-}
-
 export class RemoteAssets {
   api: UniversalApi;
   items: RemoteAsset[] = [];
 
-  constructor(private options: RemoteAssetsConfig) {
+  constructor(private target: Target, private assetType: AssetType) {
     this.api = this.createUniversalApi();
   }
 
   async load() {
-    const { assetType } = this.options;
-    logger.debug(`Remote ${assetType} loading`);
+    logger.debug(`Remote ${this.assetType} loading`);
     this.items = await this.api.getItems();
-    logger.debug(`Remote ${assetType}: ${this.items.length}`);
+    logger.debug(`Remote ${this.assetType}: ${this.items.length}`);
   }
 
   async uploadItem({ fileId, file }: LocalAsset) {
@@ -41,7 +35,7 @@ export class RemoteAssets {
   }
 
   private createUniversalApi(): UniversalApi {
-    const { assetType, target } = this.options;
+    const { assetType, target } = this;
     if (assetType === AssetType.images) {
       return isAliceTarget(target)
         ? new AliceImagesUniversalApi(target)
