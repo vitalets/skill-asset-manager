@@ -3,7 +3,9 @@
   "description": "CLI to upload and synchronize skill assets",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "bin": "dist/cli.js",
+  "bin": {
+    "asset": "dist/cli.js"
+  },
   "files": [
     "dist",
     "README.md"
@@ -15,6 +17,7 @@
     "test:d": "LOG_LEVEL=debug npm run test:l",
     "test:e2e": "mocha -r ts-node/register test/setup.ts test/specs-e2e/*.ts",
     "check": "LOG_LEVEL=info ts-node ./src/cli sync all alice -c test/assets.config.test.js",
+    "help": "ts-node ./src/cli sync --help",
     "build": "rm -rf dist && tsc -p tsconfig.build.json",
     "release": "npm run lint && npm t && npm run build && npm version $VER && npm publish && git push --follow-tags --no-verify",
     "release-patch": "VER=patch npm run release",

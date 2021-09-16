@@ -7,7 +7,7 @@ import { Runner } from '.';
 import { AssetType } from './types';
 
 type PositionalArgs = {
-  asset: CliAssetType;
+  type: CliAssetType;
   target: string;
 }
 
@@ -16,8 +16,17 @@ const ALL = 'all';
 type CliAssetType = AssetType | typeof ALL;
 
 const options = yargs(hideBin(process.argv))
-  .command<PositionalArgs>('sync <asset> <target>', 'Upload changed assets', setPositionalArgs)
-  .command<PositionalArgs>('clean <asset> <target>', 'Delete unused assets', setPositionalArgs)
+  .command<PositionalArgs>(
+    'sync <type> <target>',
+    'Upload changed assets to server and update dbFile',
+    setPositionalArgs
+  )
+  .command<PositionalArgs>(
+    'clean <type> <target>',
+    'Delete unused assets from server',
+    setPositionalArgs
+  )
+  .example('$0 sync images target-skill', 'Synchronize images for target-skill')
   .option('config', {
     alias: 'c',
     type: 'string',
@@ -26,10 +35,11 @@ const options = yargs(hideBin(process.argv))
   })
   .demandCommand()
   .help()
+  .locale('en')
   .parseSync();
 
 function setPositionalArgs(yargs: Argv) {
-  yargs.positional('asset', {
+  yargs.positional('type', {
     describe: 'Asset type',
     type: 'string',
     choices: [ ...Object.keys(AssetType), ALL ],
