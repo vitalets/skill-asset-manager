@@ -3,6 +3,7 @@ import path from 'path';
 import fg from 'fast-glob';
 import { Defaults } from './utils/types';
 import { logger } from './utils/logger';
+import { appendMessageToError } from './utils';
 
 export interface LocalAsset {
   /**
@@ -10,7 +11,8 @@ export interface LocalAsset {
    * Именно он используется для обращения к ресурсу внутри скила.
    * По умолчанию равен имени файла (без расширения).
    * Можно кастомизировать получение fileId, когда в имени файла содержится разная другая мета-информация.
-   * Например, можно записывать fileId в квадратных скобках: "image[foo].png"
+   * Например, можно записывать fileId в квадратных скобках: "[image]_800x600.png".
+   * Тогда функция getFileId: file => path.parse(file).name.match(/\[([^\]]+)\]/i)[1];
    */
   fileId: string;
   /** Путь к файлу */
@@ -50,7 +52,12 @@ export class LocalAssets {
   }
 
   private getFileId(file: string) {
-    const fileId = this.options.getFileId(file);
+    let fileId = '';
+    try {
+      fileId = this.options.getFileId(file);
+    } catch (e) {
+      throw appendMessageToError(e, `Can not get fileId for: ${file}`);
+    }
     if (!fileId) throw new Error(`Empty file id "${fileId}" for:\n${file}`);
     if (typeof fileId !== 'string') throw new Error(`Not string file id "${fileId}" for:\n${file}`);
     if (Object.prototype.hasOwnProperty.call(this.items, fileId)) {
