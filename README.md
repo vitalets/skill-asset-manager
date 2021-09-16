@@ -1,5 +1,5 @@
 # skill-asset-manager
-Easily upload and synchronize skill assets (sounds and images).
+CLI to upload and synchronize skill assets (sounds and images).
 
 ## Installation
 ```

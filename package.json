@@ -1,6 +1,6 @@
 {
   "name": "skill-asset-manager",
-  "description": "Upload and synchronize skill assets",
+  "description": "CLI to upload and synchronize skill assets",
   "version": "1.0.0",
   "main": "dist/index.js",
   "bin": "dist/cli.js",
