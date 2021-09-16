@@ -26,10 +26,11 @@ export class MarusyaSoundsUniversalApi implements UniversalApi {
     await this.platformApi.deleteItem(Number(id));
   }
 
-  private toRemoteAsset({ id }: Sound) {
+  private toRemoteAsset({ id, title }: Sound) {
     return {
       id: String(id),
       payload: this.platformApi.getTts(id),
+      desc: title,
     };
   }
 }

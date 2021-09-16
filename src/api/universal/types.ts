@@ -9,4 +9,6 @@ export interface RemoteAsset {
   id: string;
   /** Payload used in skill (for image it's id, for sound it's tts) */
   payload: string;
+  /** Description */
+  desc?: string;
 }

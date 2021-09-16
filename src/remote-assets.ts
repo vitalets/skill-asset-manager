@@ -6,6 +6,7 @@ import { AliceImagesUniversalApi } from './api/universal/alice.images';
 import { AliceSoundsUniversalApi } from './api/universal/alice.sounds';
 import { MarusyaImagesUniversalApi } from './api/universal/marusya.images';
 import { MarusyaSoundsUniversalApi } from './api/universal/marusya.sounds';
+import { LocalAsset } from './local-assets';
 
 export { RemoteAsset };
 
@@ -26,6 +27,17 @@ export class RemoteAssets {
     logger.debug(`Remote assets loading: ${this.options.assetType}`);
     this.items = await this.api.getItems();
     logger.debug(`Remote assets loaded: ${this.items.length}`);
+  }
+
+  async uploadItem(file: LocalAsset['file']) {
+    logger.log(`Uploading: ${file}`);
+    return this.api.uploadItem(file);
+  }
+
+  async deleteItem({ id, desc }: RemoteAsset) {
+    desc = desc ? ` (${desc})` : '';
+    logger.log(`Deleting: ${id}${desc}`);
+    await this.api.deleteItem(id);
   }
 
   private createUniversalApi(): UniversalApi {

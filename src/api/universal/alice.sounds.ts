@@ -26,10 +26,11 @@ export class AliceSoundsUniversalApi implements UniversalApi {
     await this.platformApi.deleteItem(id);
   }
 
-  private toRemoteAsset({ id }: Sound) {
+  private toRemoteAsset({ id, originalName }: Sound) {
     return {
       id,
       payload: this.platformApi.getTts(id),
+      desc: originalName || '',
     };
   }
 }
