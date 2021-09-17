@@ -7,8 +7,15 @@ import { Target } from '../../src/config';
 
 describe('sync', () => {
 
+  const target: Target = {
+    platform: Platform.marusya,
+    name: 'test',
+    dbFile: 'file',
+    token: 'token',
+    soundsOwnerId: 1
+  };
+
   async function createObjects() {
-    const target: Target = { platform: Platform.marusya, dbFile: '', token: '1', soundsOwnerId: 1 };
     const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
     const localAssets = new LocalAssets(target, { pattern: '' });
     const remoteAssets = new RemoteAssets(target, AssetType.images);

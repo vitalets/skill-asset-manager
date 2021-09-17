@@ -5,7 +5,7 @@ import config from '../assets.config.test';
 describe('marusya images', () => {
 
   function createApi() {
-    return new MarusyaImagesApi(config.targets.marusya as MarusyaTarget);
+    return new MarusyaImagesApi(config.targets[1] as MarusyaTarget);
   }
 
   it('getItems', async () => {

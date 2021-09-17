@@ -5,7 +5,7 @@ import config from '../assets.config.test';
 describe('alice images', () => {
 
   function createApi() {
-    return new AliceImagesApi(config.targets.alice as AliceTarget);
+    return new AliceImagesApi(config.targets[0] as AliceTarget);
   }
 
   it('getItems', async () => {

@@ -16,8 +16,8 @@ export class Runner {
   dbFile: DbFile;
   remoteAssets: RemoteAssets;
 
-  constructor(private config: Config, private assetType: AssetType, private targetName: string) {
-    this.target = this.config.getTarget(this.targetName);
+  constructor(private config: Config, private assetType: AssetType, targetName: string) {
+    this.target = this.config.getTarget(targetName);
     this.dbFile = new DbFile({ dbFile: this.target.dbFile, assetType });
     this.localAssets = new LocalAssets(this.target, this.getLocalAssetsConfig());
     this.remoteAssets = new RemoteAssets(this.target, assetType);
@@ -56,7 +56,7 @@ export class Runner {
   private logCommandTitle(msg: string) {
     msg = msg
       .replace('{assetType}', this.assetType.toUpperCase())
-      .replace('{target}', this.targetName.toUpperCase());
+      .replace('{target}', this.target.name.toUpperCase());
     logger.log('===');
     logger.log(msg);
   }

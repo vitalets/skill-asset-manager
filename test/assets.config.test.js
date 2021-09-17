@@ -9,18 +9,20 @@ module.exports = {
   sounds: {
     pattern: 'test/data/*.mp3',
   },
-  targets: {
-    alice: {
+  targets: [
+    {
       platform: 'alice',
+      name: 'alice',
       dbFile: 'temp/alice.json',
       token: ALICE_OAUTH_TOKEN,
       skillId: ALICE_SKILL_ID,
     },
-    marusya: {
+    {
       platform: 'marusya',
+      name: 'marusya',
       dbFile: 'temp/marusya.json',
       token: MARUSYA_SKILL_TOKEN,
       soundsOwnerId: -2000512016,
     }
-  }
+  ]
 };

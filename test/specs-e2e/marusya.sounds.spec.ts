@@ -5,7 +5,7 @@ import config from '../assets.config.test';
 describe('marusya sounds', () => {
 
   function createApi() {
-    return new MarusyaSoundsApi(config.targets.marusya as MarusyaTarget);
+    return new MarusyaSoundsApi(config.targets[1] as MarusyaTarget);
   }
 
   it('getItems', async () => {

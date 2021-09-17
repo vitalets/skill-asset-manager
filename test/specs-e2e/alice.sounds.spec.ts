@@ -5,7 +5,7 @@ import config from '../assets.config.test';
 describe('alice sounds', () => {
 
   function createApi() {
-    return new AliceSoundsApi(config.targets.alice as AliceTarget);
+    return new AliceSoundsApi(config.targets[0] as AliceTarget);
   }
 
   it('getItems', async () => {
