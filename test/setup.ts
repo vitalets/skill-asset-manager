@@ -1,7 +1,7 @@
-import assert from 'assert';
+import chai from 'chai';
 import sinon from 'sinon';
 
-type AssertType = typeof assert;
+type AssertType = typeof chai.assert;
 type SinonType = typeof sinon;
 
 declare global {
@@ -10,9 +10,11 @@ declare global {
 }
 
 Object.assign(global, {
-  assert: assert.strict,
+  assert: chai.assert,
   sinon,
 });
+
+chai.config.truncateThreshold = 0;
 
 afterEach(() => {
   sinon.restore();

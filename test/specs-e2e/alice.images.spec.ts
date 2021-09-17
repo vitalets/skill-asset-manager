@@ -11,8 +11,8 @@ describe('alice images', () => {
   it('getItems', async () => {
     const api = createApi();
     const items = await api.getItems();
-    assert.ok(items.length > 0);
-    assert.deepEqual(Object.keys(items[0]), [
+    assert.isAbove(items.length, 0);
+    assert.hasAllKeys(items[0], [
       'id', 'origUrl', 'size', 'createdAt'
     ]);
   });
