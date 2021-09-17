@@ -9,6 +9,7 @@ import { logger } from './utils/logger';
 import { AssetType } from './types';
 import { Sync } from './commands/sync';
 import { Clean } from './commands/clean';
+import { Verify } from './commands/verify';
 
 export class Runner {
   target: Target;
@@ -32,6 +33,14 @@ export class Runner {
   }
 
   /**
+   * Verify that all assets from dbFile are uploaded on server
+   */
+   async verify() {
+    this.logCommandTitle(`Verify {assetType} for target: {target}`);
+    await new Verify(this.dbFile, this.remoteAssets).run();
+  }
+
+  /**
    * Deletes remote assets not found in dbFile.
    */
   async clean() {
@@ -42,10 +51,6 @@ export class Runner {
     ].join(' '));
     await new Clean(this.dbFile, this.remoteAssets).run();
   }
-
-  /**
-   * TODO: Verifies that all items in dbFile are uploaded to remote.
-   */
 
   private getLocalAssetsConfig() {
     const assetsConfig = this.config.data[this.assetType];

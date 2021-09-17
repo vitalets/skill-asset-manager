@@ -44,7 +44,7 @@ export class Clean {
     logger.separator();
     const assetType = this.assetType.toUpperCase();
     logger.log(`${assetType} UNUSED: ${this.unusedItems.length}`);
-    this.unusedItems.forEach(({ id, desc }) => logger.log(`${desc ? `[${desc}] ` : ''}${id}`));
+    this.unusedItems.forEach(({ id, desc }) => logger.log(`- unused: ${desc ? `[${desc}] ` : ''}${id}`));
     logger.separator();
   }
 

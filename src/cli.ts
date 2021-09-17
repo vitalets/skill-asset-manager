@@ -20,17 +20,23 @@ const options = yargs(hideBin(process.argv))
     setPositionalArgs
   )
   .command<PositionalArgs>(
+    'verify <type> <target>',
+    'Verify that all used assets are uploaded on server',
+    setPositionalArgs
+  )
+  .command<PositionalArgs>(
     'clean <type> <target>',
     'Delete unused assets from server',
     setPositionalArgs
   )
-  .example('$0 sync images target-skill', 'Synchronize images for target-skill')
+  .example('$0 sync images alice-prod', 'Synchronize images for alice-prod')
   .option('config', {
     alias: 'c',
     type: 'string',
     description: 'Path to config file',
     default: './assets.config.js',
   })
+  .strict()
   .demandCommand()
   .help()
   .locale('en')
@@ -67,8 +73,8 @@ async function runCommandForTarget(config: Config, assetType: AssetType, targetN
   const runner = new Runner(config, assetType, targetName);
   switch (command) {
     case 'sync': return runner.sync();
+    case 'verify': return runner.verify();
     case 'clean': return runner.clean();
-    // case 'verify': return manager.verify();
     default: throw new Error(`Unknown command: ${command}`);
   }
 }

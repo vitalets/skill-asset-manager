@@ -83,11 +83,11 @@ export class Sync {
     const assetType = this.assetType.toUpperCase();
     logger.log(`${assetType} SYNCED: ${this.syncedFiles.length}`);
     logger.log(`${assetType} TO FORGET: ${this.deletedFiles.length}`);
-    this.deletedFiles.forEach(a => logger.log(`Deleted: [${a.fileId}] ${a.file}`));
+    this.deletedFiles.forEach(a => logger.log(`- deleted: [${a.fileId}] ${a.file}`));
     logger.log(`${assetType} TO UPLOAD: ${this.needsUploadFiles.length}`);
-    this.newFiles.forEach(a => logger.log(`New: [${a.fileId}] ${a.file}`));
-    this.changedFiles.forEach(a => logger.log(`Changed: [${a.fileId}] ${a.file}`));
-    this.missingOnRemoteFiles.forEach(a => logger.log(`Missing on remote: [${a.fileId}] ${a.file}`));
+    this.newFiles.forEach(a => logger.log(`- new: [${a.fileId}] ${a.file}`));
+    this.changedFiles.forEach(a => logger.log(`- changed: [${a.fileId}] ${a.file}`));
+    this.missingOnRemoteFiles.forEach(a => logger.log(`- missing on remote: [${a.fileId}] ${a.file}`));
     logger.separator();
   }
 
