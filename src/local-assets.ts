@@ -22,12 +22,13 @@ export interface LocalAsset {
   mtimeMs: number;
 }
 
+type Pattern = string | string[];
+
 export interface LocalAssetsConfig {
   /**
    * Glob pattern to local assets.
-   * '{platform}' is replaced with actual platform: alice|marusya
    */
-  pattern: string;
+  pattern: Pattern | ((target: Target) => Pattern);
   cwd?: string;
   getFileId?: (file: string) => string;
 }
@@ -66,11 +67,17 @@ export class LocalAssets {
   }
 
   private async readFiles() {
-    const pattern = this.options.pattern.replace('{platform}', this.target.platform);
+    const pattern = this.getPattern();
     logger.log(`Local files: ${pattern}`);
     const files = await fg(pattern, { onlyFiles: true });
     logger.debug(`Local files found: ${files.length}`);
     return files;
+  }
+
+  private getPattern() {
+    return typeof this.options.pattern === 'function'
+      ? this.options.pattern(this.target)
+      : this.options.pattern;
   }
 
   private addItem(file: string) {
