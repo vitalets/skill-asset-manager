@@ -42,7 +42,7 @@ describe('clean', () => {
     const { command, dbFile, remoteAssets, dbFileSave } = await createObjects();
 
     dbFile.data.images.foo = 'payload';
-    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'remoteId' };
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', hash: '0', remoteId: 'remoteId' };
     remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
 
     const deleteItem = sinon.stub(remoteAssets, 'deleteItem');

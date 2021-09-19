@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import fg from 'fast-glob';
 import { Defaults } from './utils/types';
 import { logger } from './utils/logger';
@@ -18,8 +19,8 @@ export interface LocalAsset {
   fileId: string;
   /** Путь к файлу */
   file: string;
-  /** Таймстемп последней модификации файла */
-  mtimeMs: number;
+  /** Content hash */
+  hash: string;
 }
 
 type Pattern = string | string[];
@@ -82,7 +83,12 @@ export class LocalAssets {
 
   private addItem(file: string) {
     const fileId = this.getFileId(file);
-    const { mtimeMs } = fs.statSync(file);
-    this.items[fileId] = { fileId, file, mtimeMs };
+    const hash = this.getFileHash(file);
+    this.items[fileId] = { fileId, file, hash };
+  }
+
+  private getFileHash(file: string) {
+    const buffer = fs.readFileSync(file);
+    return crypto.createHash('sha1').update(buffer).digest('hex');
   }
 }

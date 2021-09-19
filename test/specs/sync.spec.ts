@@ -31,7 +31,7 @@ describe('sync', () => {
 
   it('new file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: '0' };
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'bar', payload: 'payload' }));
 
     await command.run();
@@ -45,7 +45,7 @@ describe('sync', () => {
         foo: {
           file: 'foo.png',
           fileId: 'foo',
-          mtimeMs: 0,
+          hash: '0',
           remoteId: 'bar'
         }
       },
@@ -57,9 +57,9 @@ describe('sync', () => {
   it('changed file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 1 };
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: '1' };
     dbFile.data.images.foo = 'old payload';
-    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'old remote id' };
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', hash: '0', remoteId: 'old remote id' };
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'new remote id', payload: 'new payload' }));
 
     await command.run();
@@ -73,7 +73,7 @@ describe('sync', () => {
         foo: {
           file: 'foo.png',
           fileId: 'foo',
-          mtimeMs: 1,
+          hash: '1',
           remoteId: 'new remote id'
         }
       },
@@ -85,9 +85,9 @@ describe('sync', () => {
   it('not changed, but missing on remote file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: '0' };
     dbFile.data.images.foo = 'old payload';
-    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'old remote id' };
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', hash: '0', remoteId: 'old remote id' };
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'new remote id', payload: 'new payload' }));
 
     await command.run();
@@ -101,7 +101,7 @@ describe('sync', () => {
         foo: {
           file: 'foo.png',
           fileId: 'foo',
-          mtimeMs: 0,
+          hash: '0',
           remoteId: 'new remote id'
         }
       },
@@ -113,9 +113,9 @@ describe('sync', () => {
   it('synced file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: '0' };
     dbFile.data.images.foo = 'payload';
-    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', mtimeMs: 0, remoteId: 'remoteId' };
+    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', hash: '0', remoteId: 'remoteId' };
     remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
 
     const uploadItem = sinon.stub(remoteAssets, 'uploadItem');
@@ -132,7 +132,7 @@ describe('sync', () => {
         foo: {
           file: 'foo.png',
           fileId: 'foo',
-          mtimeMs: 0,
+          hash: '0',
           remoteId: 'remoteId'
         }
       },

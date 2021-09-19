@@ -15,7 +15,7 @@ describe('db file', () => {
   it('load, upsert, save', async () => {
     const dbFile = new DbFile({ dbFile: DB_FILE, assetType: AssetType.images });
     await dbFile.load();
-    const localAsset = { fileId: 'foo', file: 'foo.png', mtimeMs: 0 };
+    const localAsset = { fileId: 'foo', file: 'foo.png', hash: '0' };
     const remoteAsset = { id: 'bar', payload: 'payload' };
     dbFile.upsertItem(localAsset, remoteAsset);
     await dbFile.save();
@@ -27,7 +27,7 @@ describe('db file', () => {
         foo: {
           file: 'foo.png',
           fileId: 'foo',
-          mtimeMs: 0,
+          hash: '0',
           remoteId: 'bar'
         }
       },

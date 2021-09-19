@@ -65,7 +65,7 @@ export class Sync {
 
   private findChangedFileIds(commonFileIds: LocalAsset['fileId'][]) {
     const { true: changedFileIds = [], false: notChangedFileIds = [] } = groupBy(commonFileIds, fileId => {
-      return this.localAssets.items[fileId].mtimeMs !== this.dbFile.meta[fileId].mtimeMs;
+      return this.localAssets.items[fileId].hash !== this.dbFile.meta[fileId].hash;
     });
     return [ changedFileIds, notChangedFileIds ];
   }
