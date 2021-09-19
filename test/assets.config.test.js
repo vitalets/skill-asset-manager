@@ -13,16 +13,18 @@ module.exports = {
   },
   targets: [
     {
-      platform: 'alice',
       name: 'alice',
-      dbFile: 'temp/alice.json',
+      platform: 'alice',
+      imagesDbFile: 'temp/alice.images.json',
+      soundsDbFile: 'temp/alice.sounds.json',
       token: ALICE_OAUTH_TOKEN,
       skillId: ALICE_SKILL_ID,
     },
     {
-      platform: 'marusya',
       name: 'marusya',
-      dbFile: 'temp/marusya.json',
+      platform: 'marusya',
+      imagesDbFile: 'temp/marusya.images.json',
+      soundsDbFile: 'temp/marusya.sounds.json',
       token: MARUSYA_SKILL_TOKEN,
       soundsOwnerId: -2000512016,
     }

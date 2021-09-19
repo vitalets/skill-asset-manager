@@ -9,13 +9,12 @@ describe('clean', () => {
   const target: Target = {
     platform: Platform.marusya,
     name: 'test',
-    dbFile: 'file',
     token: 'token',
     soundsOwnerId: 1
   };
 
   async function createObjects() {
-    const dbFile = new DbFile({ dbFile: '', assetType: AssetType.images });
+    const dbFile = new DbFile({ dbFilePath: 'file', assetType: AssetType.images });
     const remoteAssets = new RemoteAssets(target, AssetType.images);
     const command = new Clean(dbFile, remoteAssets);
     sinon.stub(dbFile, 'load');
@@ -26,7 +25,7 @@ describe('clean', () => {
     return { command, dbFile, remoteAssets, dbFileSave };
   }
 
-  it('has unused files', async () => {
+  it('has unused remote files', async () => {
     const { command, remoteAssets, dbFileSave } = await createObjects();
 
     remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
@@ -41,8 +40,9 @@ describe('clean', () => {
   it('no unused files', async () => {
     const { command, dbFile, remoteAssets, dbFileSave } = await createObjects();
 
-    dbFile.data.images.foo = 'payload';
-    dbFile.data.imagesMeta.foo = { fileId: 'foo', file: 'foo.png', hash: '0', remoteId: 'remoteId' };
+    dbFile.data.payload.foo = 'payload';
+    dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
+    dbFile.data.remoteIds.hash1 = 'remoteId';
     remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
 
     const deleteItem = sinon.stub(remoteAssets, 'deleteItem');

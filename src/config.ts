@@ -13,7 +13,8 @@ import { groupBy } from './utils';
 interface BaseTarget {
   platform: Platform,
   name: string,
-  dbFile: DbFileOptions['dbFile'],
+  imagesDbFile?: DbFileOptions['dbFilePath'],
+  soundsDbFile?: DbFileOptions['dbFilePath'],
 }
 
 export type AliceTarget = BaseTarget & AliceApiOptions & { platform: Platform.alice }

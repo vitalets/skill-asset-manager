@@ -24,13 +24,21 @@ export class RemoteAssets {
     logger.debug(`Remote ${this.assetType}: ${this.items.length}`);
   }
 
+  getIds() {
+    return this.items.map(item => item.id);
+  }
+
+  findById(id?: RemoteAsset['id']) {
+    return this.items.find(item => item.id === id);
+  }
+
   async uploadItem({ fileId, file }: LocalAsset) {
-    logger.log(`Uploading: [${fileId}] ${file}`);
+    logger.log(`upload: [${fileId}] ${file}`);
     return this.api.uploadItem(file);
   }
 
   async deleteItem({ id, desc }: RemoteAsset) {
-    logger.log(`Deleting: ${id}${desc ? ` (${desc})` : ''}`);
+    logger.log(`delete: ${desc ? `[${desc}] ` : ''}${id}`);
     await this.api.deleteItem(id);
   }
 

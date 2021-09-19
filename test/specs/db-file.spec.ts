@@ -4,7 +4,7 @@ import { AssetType } from '../../src/types';
 
 describe('db file', () => {
 
-  const DB_FILE = 'temp/test-db-file.json';
+  const DB_FILE = 'temp/test.images.json';
 
   beforeEach(async () => {
     if (fs.existsSync(DB_FILE)) {
@@ -13,26 +13,25 @@ describe('db file', () => {
   });
 
   it('load, upsert, save', async () => {
-    const dbFile = new DbFile({ dbFile: DB_FILE, assetType: AssetType.images });
+    const dbFile = new DbFile({ dbFilePath: DB_FILE, assetType: AssetType.images });
     await dbFile.load();
-    const localAsset = { fileId: 'foo', file: 'foo.png', hash: '0' };
+    const localAsset = { fileId: 'foo', file: 'foo.png', hash: 'hash1' };
     const remoteAsset = { id: 'bar', payload: 'payload' };
     dbFile.upsertItem(localAsset, remoteAsset);
     await dbFile.save();
     assert.deepEqual(dbFile.data, {
-      images: {
+      payload: {
         foo: 'payload'
       },
-      imagesMeta: {
+      files: {
         foo: {
           file: 'foo.png',
-          fileId: 'foo',
-          hash: '0',
-          remoteId: 'bar'
+          hash: 'hash1',
         }
       },
-      sounds: {},
-      soundsMeta: {}
+      remoteIds: {
+        hash1: 'bar'
+      },
     });
   });
 

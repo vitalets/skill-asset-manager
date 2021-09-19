@@ -52,6 +52,10 @@ export class LocalAssets {
     files.forEach(file => this.addItem(file));
   }
 
+  getFileIds() {
+    return Object.keys(this.items);
+  }
+
   private getFileId(file: string) {
     let fileId = '';
     try {
