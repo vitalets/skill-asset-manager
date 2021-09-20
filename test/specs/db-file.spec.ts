@@ -16,22 +16,13 @@ describe('db file', () => {
     const dbFile = new DbFile({ dbFilePath: DB_FILE, assetType: AssetType.images });
     await dbFile.load();
     const localAsset = { fileId: 'foo', file: 'foo.png', hash: 'hash1' };
-    const remoteAsset = { id: 'bar', payload: 'payload' };
+    const remoteAsset = { id: 'remoteid1', payload: 'payload1' };
     dbFile.upsertItem(localAsset, remoteAsset);
     await dbFile.save();
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash1',
-        }
-      },
-      remoteIds: {
-        hash1: 'bar'
-      },
+      payload: { foo: 'payload1'  },
+      files: { foo: { file: 'foo.png', hash: 'hash1' } },
+      remoteIds: { hash1: 'remoteid1' },
     });
   });
 

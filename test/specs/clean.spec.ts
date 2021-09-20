@@ -52,18 +52,9 @@ describe('clean', () => {
     sinon.assert.notCalled(deleteItem);
     sinon.assert.calledOnce(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash1',
-        }
-      },
-      remoteIds: {
-        hash1: 'remoteid1'
-      },
+      payload: { foo: 'payload'  },
+      files: { foo: { file: 'foo.png', hash: 'hash1' } },
+      remoteIds: { hash1: 'remoteid1' },
     });
   });
 
