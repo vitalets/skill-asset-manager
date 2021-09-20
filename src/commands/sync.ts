@@ -8,6 +8,11 @@ import { intersectArrays, groupBy } from '../utils';
 import { confirm } from '../utils/confirm';
 import { logger } from '../utils/logger';
 
+export interface SyncOptions {
+  verify?: boolean;
+  confirmed?: boolean;
+}
+
 export class Sync {
   /** Exists in local dir, but not in db file */
   newFiles: LocalAsset[] = [];
@@ -22,7 +27,12 @@ export class Sync {
   /** newFiles + changedFiles + notUploadedFiles */
   needsSyncFiles: LocalAsset[] = [];
 
-  constructor(private dbFile: DbFile, private localAssets: LocalAssets, private remoteAssets: RemoteAssets) { }
+  constructor(
+    private dbFile: DbFile,
+    private localAssets: LocalAssets,
+    private remoteAssets: RemoteAssets,
+    private options: SyncOptions = {},
+  ) { }
 
   get assetType() {
     return this.dbFile.assetType;
@@ -32,7 +42,7 @@ export class Sync {
     await this.loadItems();
     this.selectItems();
     this.showItems();
-    if (this.noItems()) return;
+    if (this.checkItemsCount()) return;
     if (await this.confirm()) {
       await this.doActions();
       logger.log('Done.');
@@ -91,10 +101,13 @@ export class Sync {
     logger.separator();
   }
 
-  private noItems() {
-    if (this.deletedFiles.length === 0 && this.needsSyncFiles.length === 0) {
+  private checkItemsCount() {
+    if (this.deletedFiles.length + this.needsSyncFiles.length === 0) {
       logger.log(`All ${this.assetType} synced.`);
       return true;
+    } else if (this.options.verify) {
+      logger.log(`${this.assetType} not synced!`);
+      process.exit(1);
     } else {
       return false;
     }

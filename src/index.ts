@@ -33,11 +33,11 @@ export class Runner {
   }
 
   /**
-   * Verify that all assets from dbFile are uploaded on server
+   * Verifies that there are no pending changes for sync.
    */
    async verify() {
     this.logCommandTitle(`Verify {assetType} for target: {target}`);
-    // await new Verify(this.dbFile, this.remoteAssets).run();
+    await new Sync(this.dbFile, this.localAssets, this.remoteAssets, { verify: true }).run();
   }
 
   /**
