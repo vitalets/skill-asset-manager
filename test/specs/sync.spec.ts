@@ -30,35 +30,26 @@ describe('sync', () => {
 
   it('new file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: 'hash1' };
+    localAssets.items = { foo: {fileId: 'foo', file: 'foo.png', hash: 'hash1' }};
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'bar', payload: 'payload' }));
 
     await command.run();
 
     sinon.assert.calledOnce(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash1',
-        }
-      },
-      remoteIds: {
-        hash1: 'bar'
-      },
+      payload: { foo: 'payload'  },
+      files: { foo: { file: 'foo.png', hash: 'hash1' } },
+      remoteIds: { hash1: 'bar' },
     });
   });
 
   it('changed file: upload', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: 'hash2' };
-    dbFile.data.payload.foo = 'payload1';
+    localAssets.items = { foo: {fileId: 'foo', file: 'foo.png', hash: 'hash2' }};
+    dbFile.data.payload = { foo: 'payload1' };
     dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
-    dbFile.data.remoteIds.hash1 = 'remoteid1';
+    dbFile.data.remoteIds = { hash1: 'remoteid1' };
     remoteAssets.items = [{ id: 'remoteid1', payload: 'payload1' }];
 
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'remoteid2', payload: 'payload2' }));
@@ -67,27 +58,17 @@ describe('sync', () => {
 
     sinon.assert.calledOnce(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload2'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash2',
-        }
-      },
-      remoteIds: {
-        hash1: 'remoteid1',
-        hash2: 'remoteid2',
-      },
+      payload: { foo: 'payload2'  },
+      files: { foo: { file: 'foo.png', hash: 'hash2' } },
+      remoteIds: { hash1: 'remoteid1', hash2: 'remoteid2' },
     });
   });
 
   it('changed file: reuse remote id by hash', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: 'hash2' };
-    dbFile.data.payload.foo = 'payload1';
+    localAssets.items = { foo: {fileId: 'foo', file: 'foo.png', hash: 'hash2' }};
+    dbFile.data.payload = { foo: 'payload1' };
     dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
     dbFile.data.remoteIds = { hash1: 'remoteid1', hash2: 'remoteid2' };
     remoteAssets.items = [
@@ -102,28 +83,19 @@ describe('sync', () => {
     sinon.assert.notCalled(uploadItem);
     sinon.assert.calledOnce(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload2'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash2',
-        }
-      },
-      remoteIds: {
-        hash1: 'remoteid1',
-        hash2: 'remoteid2',
-      },
+      payload: { foo: 'payload2'  },
+      files: { foo: { file: 'foo.png', hash: 'hash2' } },
+      remoteIds: { hash1: 'remoteid1', hash2: 'remoteid2' },
     });
   });
 
   it('not changed, but not uploaded file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: 'hash1' };
-    dbFile.data.payload.foo = 'payload1';
-    dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
+    localAssets.items = { foo: {fileId: 'foo', file: 'foo.png', hash: 'hash1' }};
+    dbFile.data.payload = { foo: 'payload1' };
+    dbFile.data.files = { foo: { file: 'foo.png', hash: 'hash1' }};
+    dbFile.data.remoteIds = { };
     remoteAssets.items = [];
     sinon.stub(remoteAssets, 'uploadItem').callsFake(async () => ({ id: 'remoteid2', payload: 'payload2' }));
 
@@ -131,28 +103,19 @@ describe('sync', () => {
 
     sinon.assert.calledOnce(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload2'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash1',
-        }
-      },
-      remoteIds: {
-        hash1: 'remoteid2',
-      },
+      payload: { foo: 'payload2'  },
+      files: { foo: { file: 'foo.png', hash: 'hash1' } },
+      remoteIds: { hash1: 'remoteid2' },
     });
   });
 
   it('synced file', async () => {
     const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
 
-    localAssets.items.foo = { fileId: 'foo', file: 'foo.png', hash: 'hash1' };
-    dbFile.data.payload.foo = 'payload1';
-    dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
-    dbFile.data.remoteIds.hash1 = 'remoteid1';
+    localAssets.items = { foo: {fileId: 'foo', file: 'foo.png', hash: 'hash1' }};
+    dbFile.data.payload = { foo: 'payload1' };
+    dbFile.data.files = { foo: { file: 'foo.png', hash: 'hash1' }};
+    dbFile.data.remoteIds = { hash1: 'remoteid1' };
     remoteAssets.items = [{ id: 'remoteid1', payload: 'payload1' }];
 
     const uploadItem = sinon.stub(remoteAssets, 'uploadItem');
@@ -162,18 +125,31 @@ describe('sync', () => {
     sinon.assert.notCalled(uploadItem);
     sinon.assert.notCalled(dbFileSave);
     assert.deepEqual(dbFile.data, {
-      payload: {
-        foo: 'payload1'
-      },
-      files: {
-        foo: {
-          file: 'foo.png',
-          hash: 'hash1',
-        }
-      },
-      remoteIds: {
-        hash1: 'remoteid1',
-      },
+      payload: { foo: 'payload1'  },
+      files: { foo: { file: 'foo.png', hash: 'hash1' } },
+      remoteIds: { hash1: 'remoteid1' },
+    });
+  });
+
+  it('deleted file', async () => {
+    const { command, dbFile, localAssets, remoteAssets, dbFileSave } = await createObjects();
+
+    localAssets.items = {};
+    dbFile.data.payload = { foo: 'payload1' };
+    dbFile.data.files = { foo: { file: 'foo.png', hash: 'hash1' }};
+    dbFile.data.remoteIds = { hash1: 'remoteid1' };
+    remoteAssets.items = [{ id: 'remoteid1', payload: 'payload1' }];
+
+    const uploadItem = sinon.stub(remoteAssets, 'uploadItem');
+
+    await command.run();
+
+    sinon.assert.notCalled(uploadItem);
+    sinon.assert.calledOnce(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      payload: { },
+      files: { },
+      remoteIds: { hash1: 'remoteid1' },
     });
   });
 
