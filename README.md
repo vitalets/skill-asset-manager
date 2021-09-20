@@ -8,7 +8,7 @@ npm i -D skill-asset-manager
 
 ## Usage
 ```
-asset sync <type> <target>
+asset [sync|verify|clean] <type> <target>
 
 Upload changed assets to server and update dbFile
 
@@ -19,5 +19,6 @@ Positionals:
 Options:
       --version  Show version number                                   [boolean]
   -c, --config   Path to config file    [string] [default: "./assets.config.js"]
+  -y, --yes      Auto confirm                         [boolean] [default: false]
       --help     Show help                                             [boolean]
 ```
