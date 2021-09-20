@@ -4,7 +4,7 @@
 import { DbFile } from '../db-file';
 import { LocalAsset, LocalAssets } from '../local-assets';
 import { RemoteAssets } from '../remote-assets';
-import { compareArrays, groupBy } from '../utils';
+import { intersectArrays, groupBy } from '../utils';
 import { confirm } from '../utils/confirm';
 import { logger } from '../utils/logger';
 
@@ -60,7 +60,7 @@ export class Sync {
   private compareActualFilesWithDbFile() {
     const localFileIds = this.localAssets.getFileIds();
     const dbFileIds = this.dbFile.getFileIds();
-    return compareArrays(localFileIds, dbFileIds);
+    return intersectArrays(localFileIds, dbFileIds);
   }
 
   private compareKnownFilesByHash(commonFileIds: LocalAsset['fileId'][]) {

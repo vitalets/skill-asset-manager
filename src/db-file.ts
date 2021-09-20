@@ -7,7 +7,7 @@ import { logger } from './utils/logger';
 import { LocalAsset } from './local-assets';
 import { RemoteAsset } from './remote-assets';
 import { AssetType } from './types';
-import { compareArrays } from './utils';
+import { intersectArrays } from './utils';
 
 export interface DbFileOptions {
   dbFilePath?: string;
@@ -95,7 +95,7 @@ export class DbFile {
   private validate() {
     const keysPayloads = Object.keys(this.data.payload);
     const keysFiles = Object.keys(this.data.files);
-    const [ uniqueKeysPayloads, _, uniqueKeysFiles ] = compareArrays(keysPayloads, keysFiles);
+    const [ uniqueKeysPayloads, _, uniqueKeysFiles ] = intersectArrays(keysPayloads, keysFiles);
     assertIncorrectFileIds(uniqueKeysPayloads, 'files');
     assertIncorrectFileIds(uniqueKeysFiles, 'payload');
   }

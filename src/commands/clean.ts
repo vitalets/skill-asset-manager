@@ -8,10 +8,10 @@ import { confirm } from '../utils/confirm';
 import { logger } from '../utils/logger';
 
 export class Clean {
+  /** Exists in db file cache, but not on remote */
+  unusedLocalItems: LocalAsset['hash'][] = [];
   /** Exists on remote, but no links in db file */
   unusedRemoteItems: RemoteAsset[] = [];
-  /** Exists in db file cache, but not on remote */
-  unusedDbItems: LocalAsset['hash'][] = [];
 
   constructor(private dbFile: DbFile, private remoteAssets: RemoteAssets) { }
 
@@ -36,34 +36,23 @@ export class Clean {
   }
 
   private selectItems() {
-    this.selectUnusedRemoteItems();
-    this.selectUnusedDbItems();
-  }
-
-  private selectUnusedRemoteItems() {
-    const knownRemoteIds = Object.values(this.dbFile.data.remoteIds);
-    this.unusedRemoteItems = this.remoteAssets.items.filter(item => !knownRemoteIds.includes(item.id));
-  }
-
-  private selectUnusedDbItems() {
-    const remoteIds = this.remoteAssets.getIds();
-    const usedHashes = Object.values(this.dbFile.data.files).map(file => file.hash);
-    this.unusedDbItems = Object.keys(this.dbFile.data.remoteIds).filter(hash => {
-      const remoteId = this.dbFile.data.remoteIds[hash];
-      return !usedHashes.includes(hash) && !remoteIds.includes(remoteId);
-    });
+    const allHashes = Object.keys(this.dbFile.data.remoteIds);
+    const usedHashes = Object.values(this.dbFile.data.files).map(item => item.hash);
+    const usedRemoteIds = usedHashes.map(hash => this.dbFile.data.remoteIds[hash]);
+    this.unusedLocalItems = allHashes.filter(hash => !usedHashes.includes(hash));
+    this.unusedRemoteItems = this.remoteAssets.items.filter(item => !usedRemoteIds.includes(item.id));
   }
 
   private getUnusedItemsCount() {
-    return this.unusedRemoteItems.length + this.unusedDbItems.length;
+    return this.unusedLocalItems.length + this.unusedRemoteItems.length;
   }
 
   private showItems() {
     logger.separator();
     const assetType = this.assetType.toUpperCase();
     logger.log(`${assetType} UNUSED: ${this.getUnusedItemsCount()}`);
+    this.unusedLocalItems.forEach(hash => logger.log(`local: ${this.dbFile.data.remoteIds[hash]}`));
     this.unusedRemoteItems.forEach(({ id, desc }) => logger.log(`remote: ${desc ? `[${desc}] ` : ''}${id}`));
-    this.unusedDbItems.forEach(hash => logger.log(`db-file: ${this.dbFile.data.remoteIds[hash]}`));
     logger.separator();
   }
 
@@ -86,7 +75,7 @@ export class Clean {
   private async doActions() {
     logger.separator();
     await this.deleteRemoteItems();
-    this.deleteDbItems();
+    this.forgetLocalItems();
     logger.separator();
   }
 
@@ -96,8 +85,8 @@ export class Clean {
     }
   }
 
-  private deleteDbItems() {
-    for (const hash of this.unusedDbItems) {
+  private forgetLocalItems() {
+    for (const hash of this.unusedLocalItems) {
       this.dbFile.forgetHash(hash);
     }
   }

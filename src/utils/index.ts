@@ -7,7 +7,7 @@ export function appendMessageToError(e: Error, message: string) {
 /**
  * Get common and unique elements of two arrays.
  */
-export function compareArrays<T>(arr1: T[], arr2: T[]) {
+export function intersectArrays<T>(arr1: T[], arr2: T[]) {
   const uniqueInArr1: T[] = [];
   const common: T[] = [];
   const uniqueInArr2: T[] = [];
