@@ -114,6 +114,10 @@ export class Sync {
   }
 
   private async confirm() {
+    if (this.options.confirmed) {
+      logger.log('Auto confirmed.');
+      return true;
+    }
     const actons = [
       this.deletedFiles.length && `forget ${this.deletedFiles.length} file(s)`,
       this.needsSyncFiles.length && `sync ${this.needsSyncFiles.length} file(s)`,

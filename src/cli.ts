@@ -36,6 +36,12 @@ const options = yargs(hideBin(process.argv))
     description: 'Path to config file',
     default: './assets.config.js',
   })
+  .option('yes', {
+    alias: 'y',
+    type: 'boolean',
+    description: 'Auto confirm',
+    default: false,
+  })
   .strict()
   .demandCommand()
   .help()
@@ -56,12 +62,10 @@ function setPositionalArgs(yargs: Argv) {
 main();
 
 async function main() {
-  const { type, target, _, config: configPath } = options;
-  const config = new Config(configPath);
-  await config.load();
-  const targetNames = target.split(',');
-  const assetTypes = (type === 'all' ? Object.keys(AssetType) as AssetType[] : [ type ]);
-  const command = _[0];
+  const config = await getConfig();
+  const targetNames = getTargetNames();
+  const assetTypes = getAssetTypes();
+  const command = getCommand();
   for (const targetName of targetNames) {
     for (const assetType of assetTypes) {
       await runCommandForTarget(config, assetType, targetName, command);
@@ -72,9 +76,28 @@ async function main() {
 async function runCommandForTarget(config: Config, assetType: AssetType, targetName: string, command: string | number) {
   const runner = new Runner(config, assetType, targetName);
   switch (command) {
-    case 'sync': return runner.sync();
+    case 'sync': return runner.sync({ confirmed: options.yes });
     case 'verify': return runner.verify();
     case 'clean': return runner.clean();
     default: throw new Error(`Unknown command: ${command}`);
   }
+}
+
+async function getConfig() {
+  const config = new Config(options.config);
+  await config.load();
+  return config;
+}
+
+function getAssetTypes() {
+  const { type } = options;
+  return (type === 'all' ? Object.keys(AssetType) as AssetType[] : [ type ]);
+}
+
+function getTargetNames() {
+  return options.target.split(',');
+}
+
+function getCommand() {
+  return options._[0];
 }

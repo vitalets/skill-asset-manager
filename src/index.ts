@@ -7,7 +7,7 @@ import { LocalAssets } from './local-assets';
 import { RemoteAssets } from './remote-assets';
 import { logger } from './utils/logger';
 import { AssetType } from './types';
-import { Sync } from './commands/sync';
+import { Sync, SyncOptions } from './commands/sync';
 import { Clean } from './commands/clean';
 // import { Verify } from './commands/verify';
 
@@ -27,9 +27,9 @@ export class Runner {
   /**
    * Uploads changed assets and updates dbFile.
    */
-  async sync() {
+  async sync(syncOptions: SyncOptions = {}) {
     this.logCommandTitle(`Syncing {assetType} for target: {target}`);
-    await new Sync(this.dbFile, this.localAssets, this.remoteAssets).run();
+    await new Sync(this.dbFile, this.localAssets, this.remoteAssets, syncOptions).run();
   }
 
   /**

@@ -81,7 +81,7 @@ export class DbFile {
   }
 
   forgetFile({ file, fileId }: LocalAsset) {
-    logger.log(`forget: [${fileId}] ${file}`);
+    logger.log(`forget file: [${fileId}] ${file}`);
     delete this.data.payload[fileId];
     delete this.data.files[fileId];
   }
