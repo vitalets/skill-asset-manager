@@ -74,9 +74,13 @@ export class Clean {
 
   private async doActions() {
     logger.separator();
-    await this.deleteRemoteItems();
-    this.forgetLocalItems();
-    logger.separator();
+    try {
+      await this.deleteRemoteItems();
+      this.forgetLocalItems();
+    } finally {
+      logger.separator();
+      if (this.unusedLocalItems.length) await this.dbFile.save();
+    }
   }
 
   private async deleteRemoteItems() {

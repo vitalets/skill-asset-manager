@@ -25,7 +25,7 @@ describe('clean', () => {
     return { command, dbFile, remoteAssets, dbFileSave };
   }
 
-  it('has unused remote files', async () => {
+  it('delete unused remote items', async () => {
     const { command, remoteAssets, dbFileSave } = await createObjects();
 
     remoteAssets.items = [{ id: 'remoteId', payload: 'payload' }];
@@ -35,6 +35,36 @@ describe('clean', () => {
 
     sinon.assert.notCalled(dbFileSave);
     assert.deepEqual(deleteItem.firstCall.firstArg, { id: 'remoteId', payload: 'payload' });
+  });
+
+  it('delete unused local items', async () => {
+    const { command, dbFile, remoteAssets, dbFileSave } = await createObjects();
+
+    dbFile.data.payload.foo = 'payload';
+    dbFile.data.files.foo = { file: 'foo.png', hash: 'hash1' };
+    dbFile.data.remoteIds = { hash1: 'remoteid1', hash2: 'unused' };
+    remoteAssets.items = [];
+
+    const deleteItem = sinon.stub(remoteAssets, 'deleteItem');
+
+    await command.run();
+
+    sinon.assert.notCalled(deleteItem);
+    sinon.assert.calledOnce(dbFileSave);
+    assert.deepEqual(dbFile.data, {
+      payload: {
+        foo: 'payload'
+      },
+      files: {
+        foo: {
+          file: 'foo.png',
+          hash: 'hash1',
+        }
+      },
+      remoteIds: {
+        hash1: 'remoteid1'
+      },
+    });
   });
 
   it('no unused files', async () => {
