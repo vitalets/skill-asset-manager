@@ -143,7 +143,7 @@ export class Sync {
     const cachedRemoteId = this.dbFile.data.remoteIds[hash];
     const remoteAsset = this.remoteAssets.findById(cachedRemoteId);
     if (remoteAsset) {
-      logger.log(`reuse id: [${fileId}] ${file}`);
+      logger.log(`reuse remote id: [${fileId}] ${file}`);
     }
     return remoteAsset;
   }
