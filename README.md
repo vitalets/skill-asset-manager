@@ -22,3 +22,6 @@ Options:
   -y, --yes      Auto confirm                         [boolean] [default: false]
       --help     Show help                                             [boolean]
 ```
+
+## License
+MIT @ [Vitaliy Potapov](https://github.com/vitalets)
