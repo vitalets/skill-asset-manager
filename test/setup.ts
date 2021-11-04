@@ -1,12 +1,9 @@
 import chai from 'chai';
 import sinon from 'sinon';
 
-type AssertType = typeof chai.assert;
-type SinonType = typeof sinon;
-
 declare global {
-  const assert: AssertType;
-  const sinon: SinonType;
+  const assert: typeof chai.assert;
+  const sinon: typeof sinon;
 }
 
 Object.assign(global, {
