@@ -1,6 +1,4 @@
-require('dotenv/config');
-
-const { ALICE_OAUTH_TOKEN, ALICE_SKILL_ID, MARUSYA_SKILL_TOKEN } = process.env;
+const { ALICE_OAUTH_TOKEN, ALICE_SKILL_ID, MARUSYA_SKILL_TOKEN } = require('../.env');
 
 module.exports = {
   images: {
