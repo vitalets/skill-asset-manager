@@ -34,7 +34,7 @@ const options = yargs(hideBin(process.argv))
     alias: 'c',
     type: 'string',
     description: 'Path to config file',
-    default: './assets.config.js',
+    default: './assets.config.(js|cjs)',
   })
   .option('yes', {
     alias: 'y',

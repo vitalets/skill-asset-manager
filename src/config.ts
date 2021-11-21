@@ -1,6 +1,7 @@
 /**
  * Load assets.config.js
  */
+import fs from 'fs';
 import path from 'path';
 import { LocalAssetsConfig } from './local-assets';
 import { AliceApiOptions } from './api/alice/base';
@@ -38,19 +39,29 @@ export class Config {
   constructor(private path: string) { }
 
   async load() {
-    // todo: find file js, cjs, mjs
     logger.debug(`Config loading: ${this.path}`);
-    const fullPath = path.join(process.cwd(), this.path);
-    const content = await import(fullPath);
+    const fileVariants = this.getFileVariants().map(file => path.resolve(file));
+    const existingFile = fileVariants.find(p => fs.existsSync(p));
+    if (!existingFile) throw new Error(`File not found: ${this.path}`);
+    const content = await import(existingFile);
     this.data = Object.assign({}, defaults, content.default as ConfigData);
     this.assertDuplicateTargetNames();
-    logger.debug(`Config loaded.`);
+    logger.debug(`Config loaded: ${existingFile}`);
   }
 
   getTarget(name: string) {
     const target = this.data.targets.find(t => t.name === name);
     if (!target) throw new Error(`Unknown target: ${name}`);
     return target;
+  }
+
+  private getFileVariants() {
+    const fileInfo = path.parse(this.path);
+    // use variants if file is default value: ./deploy.config.(js|cjs)
+    const useVariants = fileInfo.ext.includes('|');
+    return useVariants
+      ? [ '.js', '.cjs' ].map(ext => path.format({ ...fileInfo, base: '', ext }))
+      : [ this.path ];
   }
 
   private assertDuplicateTargetNames() {
